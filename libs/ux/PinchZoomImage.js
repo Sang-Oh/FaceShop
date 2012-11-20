@@ -179,8 +179,7 @@ Ext.define('Ext.ux.PinchZoomImage', {
 	 * @param  {[type]} evt [event argument]
 	 */	
 	 handleScroll:function(evt){
-					if (this.getIsFrozen()) return;
-		isFrozen
+		if (this.getIsFrozen()) return;
 		if (!this.getUseMouseWheelEvent()) return;
 		var delta = evt.wheelDelta ? evt.wheelDelta/40 : evt.detail ? -evt.detail : 0;
 		if (delta) 	this.zoom(delta);
