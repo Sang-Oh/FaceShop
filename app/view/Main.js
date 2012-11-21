@@ -41,8 +41,31 @@ Ext.define("FaceShop.view.Main", {
 		listeners:{
 			scope:this,
 			initialize:function(cmp) {
-				var bg = cmp.query('pinchzoomimage')[0];
-				var node = bg.element.dom.firstChild;
+				/*
+				//var canvasEl= Ext.DomQuery.select('canvas')[0];
+				var canvasEl=document.getElementsByTagName('canvas')[0]
+				var frameEl = document.createElement('img');
+				frameEl.className='faceframe';
+				frameEl.src="resources/images/0.png";
+				canvasEl.parentElement.appendChild(frameEl);
+				*/
+			/*
+					var node = bg.element.dom.firstChild;
+				var carousel =
+				Ext.create('Ext.Container', {
+					left:'0',
+					id:'bg',
+					top:0,
+					width:'100%',
+					height:'100%',
+					renderTo: node,
+					items:[
+					{
+						html:'<div style=""><img src="resources/images/0.png" style="position:absolute;left:50%;top:50%;opacity:0.4;margin-left:-160px;margin-top:-240px;" width="320" height="480"/></div>'
+					}
+					],
+					scope: this
+				});
 				/*
 				var carousel =
 				Ext.create('Ext.Carousel', {

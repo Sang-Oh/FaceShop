@@ -23,7 +23,10 @@ Ext.define('Ext.ux.PinchZoomImage', {
 		
 		styleHtmlContent:true,
 		layout:'fit',
-		html:'<canvas style="position:absolute;top:0px;left:0px;width:100%;height:100%;"/>',
+		html:['<canvas style="position:absolute;top:0px;left:0px;width:100%;height:100%;"/>'
+				//'<img src="resources/images/0.png" style="position:absolute;left:50%;top:50%;opacity:0.4;margin-left:-160px;margin-top:-240px;"',
+				// 'width="320" height="480"/>'
+			].join(''),
 		listeners:{
 			scope:this,	
 			painted:function(cmp) {
