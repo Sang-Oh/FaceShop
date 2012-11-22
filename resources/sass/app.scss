@@ -16,4 +16,15 @@
 @include sencha-form;
 @include sencha-msgbox;
 
+
+    .x-toolbar-transparent {
+    background-color : transparent;
+
+    &.x-docked-bottom {
+        border-top : 0;
+    }
+    &.x-docked-top {
+        border-bottom : 0;
+    }
+}
 // Your custom code goes here...

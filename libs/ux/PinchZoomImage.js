@@ -24,16 +24,23 @@ Ext.define('Ext.ux.PinchZoomImage', {
 		isDoubleTapDisabled:true,
 		styleHtmlContent:true,
 		layout:'fit',
-		html:['<canvas style="position:absolute;top:0px;left:0px;width:100%;height:100%;"/>'
-				//'<img src="resources/images/0.png" style="position:absolute;left:50%;top:50%;opacity:0.4;margin-left:-160px;margin-top:-240px;"',
-				// 'width="320" height="480"/>'
+		objectEl:null,
+		objectImgEl:null,
+		html:['<canvas style="position:absolute;top:0px;left:0px;width:100%;height:100%;"/>',
 			].join(''),
 		listeners:{
 			scope:this,	
 			activate:function(view) {
+				
 				var canvasParentEl = view.element.dom.firstChild.firstChild;
-				var objframe = Ext.DomQuery.select('#objframe')[0];
-				canvasParentEl.appendChild(objframe.parentNode.removeChild(objframe));
+				var objframe = Ext.DomQuery.select('#objframe')[0].cloneNode(true);
+				objframe.id = Ext.id('','objframe-');
+				canvasParentEl.appendChild(objframe);
+				view.setObjectEl(objframe);
+				var img = objframe.getElementsByTagName('img')[0];
+
+				view.setObjectImgEl(img);
+				console.log(objframe);							
 			},
 			painted:function(cmp) {
 				//console.log("pinchzoomimage:painted", this);

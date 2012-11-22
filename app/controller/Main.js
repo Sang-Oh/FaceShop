@@ -7,21 +7,17 @@ Ext.define('FaceShop.controller.Main', {
 		userInfo:null,		
 		refs: {
 			face:'pinchzoomimage',
+			editView:'faceedit',
+			editPinch:'faceedit pinchzoomimage',
 		},
 		control:{
-			face: {
-				//activate:'onInitFace',
-			},
-			'canvas': {
-				//:'onInitFace',
+			'faceedit dataview':{
+				itemsingletap:'onItemSelectFromFaceEdit'
 			}
 		}
 	},
-	onInitFace:function(view) {
-		//var canvasParentEl = document.getElementsByTagName('canvas')[0];//.parentElement;
-
-		var canvasParentEl = view.element.dom.firstChild.firstChild;
-		var objframe = Ext.DomQuery.select('#objframe')[0];
-		canvasParentEl.appendChild(objframe.parentNode.removeChild(objframe));
-	} 
+	onItemSelectFromFaceEdit:function (dataview,  index,  target, record){
+		var img = this.getEditPinch().getObjectImgEl();
+		img.src = record.get('src');
+    },   
 });
