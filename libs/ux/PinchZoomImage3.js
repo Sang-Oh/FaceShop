@@ -18,16 +18,13 @@ Ext.define('Ext.ux.PinchZoomImage', {
 	config:{
 		src:null,			// source of image to draw
 		isBGFrozen:false,		// default false, when set true, transformation is disabled.
-		isObjFrozen:false,
+		isObjFrozen:false,		
 		scaleFactor:1.1,	//  default 1.1	,control the scale ratio,
 		useMouseWheelEvent:true,	// default: true, when set true, scaling is applied with mouse wheel event
-		isDoubleTapDisabled:true,
+		
 		styleHtmlContent:true,
 		layout:'fit',
-		html:['<canvas style="position:absolute;top:0px;left:0px;width:100%;height:100%;"/>'
-				//'<img src="resources/images/0.png" style="position:absolute;left:50%;top:50%;opacity:0.4;margin-left:-160px;margin-top:-240px;"',
-				// 'width="320" height="480"/>'
-			].join(''),
+		html:'<canvas style="position:absolute;top:0px;left:0px;width:100%;height:100%;"/>',
 		listeners:{
 			scope:this,	
 			activate:function(view) {
@@ -35,100 +32,102 @@ Ext.define('Ext.ux.PinchZoomImage', {
 				var objframe = Ext.DomQuery.select('#objframe')[0];
 				canvasParentEl.appendChild(objframe.parentNode.removeChild(objframe));
 			},
-			painted:function(cmp) {
-				//console.log("pinchzoomimage:painted", this);
-				cmp.redraw();
-			},
 			tap: {
 				fn : function(e, el, obj) {
 					
 					if (el.tagName == "IMG") {
 						$("[name=mark]").removeClass("hidemark").addClass("showmark");
 						this.setIsObjFrozen(false);
-						this.setIsBGFrozen(true);
 					} else {
 						$("[name=mark]").removeClass("showmark").addClass("hidemark");
 						this.setIsObjFrozen(true);
-						this.setIsBGFrozen(false);
 					}
 					console.log(el);
-					$("#dbg").text("");
 				},	
 				element: 'element',
+			},						
+			painted:function(cmp) {
+				//console.log("pinchzoomimage:painted", this);
+				cmp.redraw();
 			},
-			
 			doubletap: {
 				fn : function(e, el, obj) {
-					if (this.getIsDoubleTapDisabled()) return;
 					//console.log("pinchzoomimage:doubletap", this);
-					if (this.getIsBGFrozen()) return;
-					this.redraw();
+					if (this.getBGIsFrozen()) return;
+						this.redraw();
 				},	
 				element: 'element',
+				delegate:'canvas'				
 			},
-			
 			dragstart: {
 				fn: function(e, el, obj) {
-					if (!this.getIsBGFrozen())
-						this.bgDragStart(e,el,obj);
-					else if (!this.getIsObjFrozen())
-						this.objDragStart(e,el,obj);
+					if (this.getBGIsFrozen()) return;
+					this.lastX = e.pageX;
+					this.lastY = e.pageY;
+					document.body.style.mozUserSelect = document.body.style.webkitUserSelect = document.body.style.userSelect = 'none';
+				
+					this.dragStart = this.ctx.transformedPoint(this.lastX,this.lastY);
+					this.dragged = false;
 				},	
-				element: 'element'	
+				element: 'element',
+				delegate:'canvas'		
 			},
 			dragend: {
 				fn :function(e, el, obj) {
-					
-					if (!this.getIsBGFrozen())
-						this.bgDragEnd(e,el,obj);
-					else if (!this.getIsObjFrozen())
-						this.objDragEnd(e,el,obj);
+					this.dragged = false;
+					if (this.getIsBGFrozen()) return;
+					this.lastX = e.pageX;
+					this.lastY = e.pageY;
+					this.dragStart = null;   
 				},	
-				element: 'element',		
+				element: 'element',
+				delegate:'canvas'			
 			},
 			drag: {
 				fn :function(e, el, obj) {
-					if (!this.getIsBGFrozen())
-						this.bgDrag(e,el,obj);
-					else if (!this.getIsObjFrozen())
-						this.objDrag(e,el,obj);
-
+					if (this.getBGIsFrozen()) return;
+					this.lastX = e.pageX;
+					this.lastY = e.pageY;
+					
+					if (this.dragStart && this.isScaled){
+						var pt = this.ctx.transformedPoint(this.lastX, this.lastY);
+						this.ctx.translate(pt.x-this.dragStart.x,pt.y-this.dragStart.y);
+						this.draw();
+					}			
+					this.lastX = e.offsetX || (e.pageX - this.canvas.offsetLeft);
+					this.lastY = e.offsetY || (e.pageY - this.canvas.offsetTop);
 				},	
-				element: 'element',			
-			},
-			rotate:{
-				fn:function(e,el,obj) {
-					if (!this.getIsObjFrozen())
-						this.objRotate(e,el,obj);
-				},
-					element: 'element',			
+				element: 'element',
+				delegate:'canvas'		
 			},
 			pinchstart: {
 				fn :function (e, el, obj) {
-					if (!this.getIsBGFrozen())
-						this.bgPinchStart(e,el,obj);
-					else if (!this.getIsObjFrozen())
-						this.objPinchStart(e,el,obj);
+					if (this.getBGIsFrozen()) return;
+					this.lastX = e.pageX;
+					this.lastY = e.pageY;
+					this.dragged = false;
 				},	
 				element: 'element',
+				delegate:'canvas'			
 			},
 			pinchend: {
 				fn : function (e, el, obj) {
-					if (!this.getIsBGFrozen())
-						this.bgPinchEnd(e,el,obj);
-					else if (!this.getIsObjFrozen())
-						this.objPinchEnd(e,el,obj);
+					if (this.getBGIsFrozen()) return;
+					this.lastX = e.pageX;
+					this.lastY = e.pageY;
+					dragged = false;
 				},	
 				element: 'element',
+				delegate:'canvas'					
 			},	
 			pinch : {
 				fn : function (e, el, obj) {	
-					if (!this.getIsBGFrozen())
-						this.bgPinch(e,el,obj);
-					else if (!this.getIsObjFrozen())
-						this.objPinch(e,el,obj);
+					if (this.getBGIsFrozen()) return;
+					this.zoom(e.scale-1);
+					this.dragged = true;		
 				},	
 				element: 'element',
+				delegate:'canvas'			
 			},		
 		}			
 	},
@@ -149,7 +148,7 @@ Ext.define('Ext.ux.PinchZoomImage', {
 	canvasHeight:null,
 	isScaled:false,
 	dragStart:null,
-	objPosition:{x:0,y:0},
+	objPosition:{x:0,y:0},	
 	/*********************/
 	
 	/**
@@ -202,7 +201,7 @@ Ext.define('Ext.ux.PinchZoomImage', {
 	 * @param  {[type]} evt [event argument]
 	 */	
 	 handleScroll:function(evt){
-		if (this.getIsBGFrozen()) return;
+		//console.log("handleScroll");
 		if (!this.getUseMouseWheelEvent()) return;
 		var delta = evt.wheelDelta ? evt.wheelDelta/40 : evt.detail ? -evt.detail : 0;
 		if (delta) 	this.zoom(delta);
@@ -309,27 +308,13 @@ Ext.define('Ext.ux.PinchZoomImage', {
 			this.ctx.drawImage(this.image, this.srcX, this.srcY, this.srcWidth, this.srcHeight, this.destX, this.destY, this.destWidth, this.destHeight);
 		}
 	},
-	/**
-	 * [onLoadImage image load hadler to draw it on the canvas]
-	 */	
-	onLoadImage:function() {
-		//console.log("pinchzoomimage:onLoadImage to load image");
-		this.initCanvas();
-		this.redraw();
-	},
-	onErrorImage:function() {
-		//console.log("pinchzoomimage:onErrorImage to load image");
-	},
-	onAbortImage:function() {
-		//console.log("pinchzoomimage:onAbortImage to load image");
-	},
 	bgDragStart:function(e, el, obj) {
 		if (this.getIsBGFrozen()) return;
 		this.lastX = e.pageX;
 		this.lastY = e.pageY;
 		document.body.style.mozUserSelect = document.body.style.webkitUserSelect = document.body.style.userSelect = 'none';
 	
-		this.dragStart = this.ctx.transformedPoint(this.lastX,this.lastY);
+		this.dragStart = true;
 		this.dragged = false;
 	},		
 	bgDragEnd:function(e, el, obj) {
@@ -340,12 +325,11 @@ Ext.define('Ext.ux.PinchZoomImage', {
 		this.dragStart = false;  
 	},		
 	bgDrag:function(e, el, obj) {
-		//debugger;
 		if (this.getIsBGFrozen()) return;
 		this.lastX = e.pageX;
 		this.lastY = e.pageY;
 		
-		if (this.dragStart) { // && this.isScaled){
+		if (this.dragStart && this.isScaled){
 			var pt = this.ctx.transformedPoint(this.lastX, this.lastY);
 			this.ctx.translate(pt.x-this.dragStart.x,pt.y-this.dragStart.y);
 			this.draw();
@@ -361,6 +345,7 @@ Ext.define('Ext.ux.PinchZoomImage', {
 		
 		this.lastX = e.pageX;
 		this.lastY = e.pageY;
+		this.dragStart = true;
 		this.dragged = false;
 	},		
 	objDragEnd:function(e, el, obj) {
@@ -368,9 +353,10 @@ Ext.define('Ext.ux.PinchZoomImage', {
 		if (this.getIsObjFrozen()) return;
 		this.lastX = e.pageX;
 		this.lastY = e.pageY;
+		this.dragStart = null;  
 	},		
 	objDrag:function(e, el, obj) {
-		if (this.getIsObjFrozen()) return;
+		if (!this.dragStart || this.getIsObjFrozen()) return;
 
 		this.objPosition.x += (e.pageX-this.lastX);
 		this.objPosition.y += (e.pageY-this.lastY);
@@ -381,51 +367,21 @@ Ext.define('Ext.ux.PinchZoomImage', {
 
 		this.lastX = e.offsetX || (e.pageX - el.offsetLeft);
 		this.lastY = e.offsetY || (e.pageY - el.offsetTop);
-	},		
-	bgPinchStart: function (e, el, obj) {
-		if (this.getIsBGFrozen()) return;
-		this.lastX = e.pageX;
-		this.lastY = e.pageY;
-		this.dragged = false;
+	},	
+	/**
+	 * [onLoadImage image load hadler to draw it on the canvas]
+	 */	
+	onLoadImage:function() {
+		//console.log("pinchzoomimage:onLoadImage to load image");
+		this.initCanvas();
+		this.redraw();
 	},
-	bgPinchEnd:function (e, el, obj) {
-		if (this.getIsBGFrozen()) return;
-		this.lastX = e.pageX;
-		this.lastY = e.pageY;
-		this.dragged = false;
-	},	
-	bgPinch:function (e, el, obj) {	
-		if (this.getIsBGFrozen()) return;
-		this.zoom(e.scale-1);
-		this.dragged = true;		
-	},	
-	objPinchStart: function (e, el, obj) {
-		if (this.getIsObjFrozen()) return;
-		console.log('objPinchStart')
-		this.lastX = e.pageX;
-		this.lastY = e.pageY;
-		this.dragged = false;
+	onErrorImage:function() {
+		//console.log("pinchzoomimage:onErrorImage to load image");
 	},
-	objPinchEnd:function (e, el, obj) {
-		if (this.getIsObjFrozen()) return;
-		this.lastX = e.pageX;
-		this.lastY = e.pageY;
-		this.dragged = false;
-	},	
-	objPinch:function (e, el, obj) {	
-		if (this.getIsObjFrozen()) return;
-		//this.zoom(e.scale-1);
-		//this.dragged = true;		
-		//$("#dbg").text('angle:'+e.angle+',scale:'+e.scale);
-	},	
-	objRotate:function (e, el, obj) {	
-		if (this.getIsObjFrozen()) return;
-		$("#objframe").rotate(e.angle);
-		//this.zoom(e.scale-1);
-		//this.dragged = true;
-		var old = 	$("#dbg").text();	
-		$("#dbg").text(old+'&nbsp;'+parseInt(e.angle));
-	},	
+	onAbortImage:function() {
+		//console.log("pinchzoomimage:onAbortImage to load image");
+	},
 	/**
 	 * [initCanvas image load hadler to draw it on the canvas]
 	 */		

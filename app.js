@@ -12,7 +12,7 @@ Ext.application({
     requires: [
         'Ext.MessageBox'
     ],
-
+	controllers:['Main'],
     views: ['Main'],
 
     icon: {

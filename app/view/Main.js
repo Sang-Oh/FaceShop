@@ -1,26 +1,23 @@
 Ext.define("FaceShop.view.Main", {
-    extend: 'Ext.tab.Panel',
+    extend: 'Ext.Container',
     requires: ['Ext.TitleBar',
     'Ext.carousel.Carousel',
     'Ext.ux.PinchZoomImage'],   
     config: {
-        tabBarPosition: 'top',
+    	layout:'fit',
         items: [
-            {
-                title: 'FaceShop',
-                iconCls: 'home',
-                layout:'fit',
-                items: [{
-                    docked: 'top',
-                    xtype: 'titlebar',
-                    title: 'FaceShop'
-                },
                 {
 	                	layout:'fit',
 	                	xtype:'pinchzoomimage',
 		            	style:'background-color:#000',
 		            	src:'resources/images/b.png',
 		            	isFrozen:false,                		
+	            }, {
+	            	xtype:'container',
+	            	width:"100%",
+	            	html:'<div id="dbg"/>',
+	            	height:50,
+	            	docked:'top',
 	            }
 	            /*
 	            , {
@@ -35,15 +32,13 @@ Ext.define("FaceShop.view.Main", {
 	            	].join(''),
 	            }   
 	            */
-                ]
-            }
 		],
 		listeners:{
 			scope:this,
 			initialize:function(cmp) {
 				/*
 				//var canvasEl= Ext.DomQuery.select('canvas')[0];
-				var canvasEl=document.getElementsByTagName('canvas')[0]
+				var canvasEl=document.getElementsByTagName('canvas')[0].parentElement
 				var frameEl = document.createElement('img');
 				frameEl.className='faceframe';
 				frameEl.src="resources/images/0.png";
@@ -88,6 +83,7 @@ Ext.define("FaceShop.view.Main", {
 			},
 		}		
 	},
+	
 	activeitemchange: function(container, value, oldValue, eOpts) {
 		var activeItemIndex = container.getActiveIndex();
 		var galleryTotal = container.getInnerItems() ? container.getInnerItems().length : 0;
