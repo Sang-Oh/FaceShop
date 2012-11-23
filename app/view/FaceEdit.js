@@ -15,13 +15,17 @@ Ext.define("FaceShop.view.FaceEdit", {
 	            	style:'background-color:#000',
 	            	src:'resources/images/b.png',
 	            	isFrozen:false,                		
-	            }, {
+	            },
+	            /*
+	            {
 	            	xtype:'container',
 	            	width:"100%",
 	            	html:'<div id="dbg"/>',
 	            	height:50,
 	            	docked:'top',
-	            }, {
+	            }, 
+	            */
+	            {
 	            	xtype:'container',
 	            	
 	            	docked:'bottom',

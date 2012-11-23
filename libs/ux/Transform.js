@@ -15,6 +15,18 @@ Ext.define('Ext.ux.Transform', {
 	reset:function() {
 		this.m = [1,0,0,1,0,0];
 	},
+	setMatrix:function(matrix) {
+		for (var i=0;i<this.m.length;i++) {
+			this.m[i] = matrix[i];
+		}		
+	},
+	cloneMatrix:function(matrix) {
+		var m2 = [];
+		for (var i=0;i<this.m.length;i++) {
+			m2[i] = this.m[i];
+		}		
+		return m2;
+	},	
 	clone:function() {
 		var k = new Ext.create('Ext.ux.Transform');
 		for (var i=0;i<this.m.length;i++) {

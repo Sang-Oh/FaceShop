@@ -1,0 +1,165 @@
+<!DOCTYPE HTML>
+<html manifest="" lang="en-US">
+<head>
+    <meta charset="UTF-8">
+    <title>FaceShop</title>
+    <style type="text/css">
+    
+
+        html, body {
+            height: 100%;
+            background-color: #1985D0
+        }
+		
+		.thumbnailimg {
+			width:48px;
+			height:48px;
+			padding:0;
+			margin-top:6px;
+			margin-left:12px;
+			margin-right:6px;
+		}
+		.thumbnailcontainer {
+			position:absolute;left:0px;
+			bottom:0px;height:60px;width:100%;background-color:#111111;opacity:0.7;
+		}
+		.objframe {
+			position:absolute;left:50%;top:50%;
+			left:0px;top:0px;
+			margin:15px;
+			padding:15px;
+			width:200px;
+			height:100px;
+		}
+		.hidemark {
+			border:none;
+		}
+		.showmark {
+			border:dashed;
+			border-color: white;
+			border-width:1px;			
+		}
+		.marklt {
+			position:absolute;
+			left:0;
+			top:0;
+			width:10px;
+			height:10px;
+			margin-left:-5px;
+			margin-top:-5px;
+		}
+		.marklb {
+			position:absolute;
+			left:0;
+			bottom:0;
+			width:10px;
+			height:10px;
+			margin-left:-5px;
+			margin-bottom:-5px;
+		}
+		.markrb {
+			position:absolute;
+			right:0;
+			bottom:0;
+			width:10px;
+			height:10px;
+			margin-right:-5px;
+			margin-bottom:-5px;
+		}
+		.markrt {
+			position:absolute;
+			right:0;
+			top:0;
+			width:10px;
+			height:10px;
+			margin-right:-5px;
+			margin-top:-5px;
+		}
+				.objimg {
+			position:absolute;
+			left:0;
+			top:0;
+			margin:5;
+			padding:0;
+			width:100%;
+			height:100%;
+		}
+		
+		#appLoadingIndicator {
+            position: absolute;
+            top: 50%;
+            margin-top: -15px;
+            text-align: center;
+            width: 100%;
+            height: 30px;
+            -webkit-animation-name: appLoadingIndicator;
+            -webkit-animation-duration: 0.5s;
+            -webkit-animation-iteration-count: infinite;
+            -webkit-animation-direction: linear;
+        }
+
+        #appLoadingIndicator > * {
+            background-color: #FFFFFF;
+            display: inline-block;
+            height: 30px;
+            -webkit-border-radius: 15px;
+            margin: 0 5px;
+            width: 30px;
+            opacity: 0.8;
+        }
+
+        @-webkit-keyframes appLoadingIndicator{
+            0% {
+                opacity: 0.8
+            }
+            50% {
+                opacity: 0
+            }
+            100% {
+                opacity: 0.8
+            }
+        }
+    </style>
+    
+    <link rel="stylesheet" href="http://code.jquery.com/ui/1.9.1/themes/base/jquery-ui.css" />
+    <script src="http://code.jquery.com/jquery-1.8.2.js"></script>
+    <script src="http://code.jquery.com/ui/1.9.1/jquery-ui.js"></script>    
+    <script src="jQueryRotateCompressed.2.2.js"></script>    
+    <script src="jquerytransit.js"></script>
+    <script src="htmlcanvas/html2canvas.js"></script>
+        <!-- The line below must be kept intact for Sencha Command to build your application -->
+    <script type="text/javascript">(function(h){function f(c,d){document.write('<meta name="'+c+'" content="'+d+'">')}if("undefined"===typeof g)var g=h.Ext={};g.blink=function(c){var d=c.js||[],c=c.css||[],b,e,a;f("viewport","width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no");f("apple-mobile-web-app-capable","yes");f("apple-touch-fullscreen","yes");b=0;for(e=c.length;b<e;b++)a=c[b],"string"!=typeof a&&(a=a.path),document.write('<link rel="stylesheet" href="'+a+'">');b=0;for(e=d.length;b<
+e;b++)a=d[b],"string"!=typeof a&&(a=a.path),document.write('<script src="'+a+'"><\/script>')}})(this);;Ext.blink({"id":"b6f1b0f5-3c7b-47aa-9cd5-3b4c4eb7f0a7","js":[{"type":"js","path":"touch/sencha-touch.js"},{"update":"delta","path":"app.js","type":"js","bundle":true}],"css":[{"update":"delta","type":"css","path":"resources/css/app.css"}]})</script>
+
+</head>
+<body>
+    <div id="appLoadingIndicator">
+        <div></div>
+        <div></div>
+        <div></div>
+    </div>
+    <div id="fakeframe" style="display:none;">
+    	<div id="objframe"  name="mark" class="objframe hidemark">
+ 	    		<img src="resources/images/a.png" name="objimg" class="objimg"/>
+	    		<div id="marklt" name="mark" class="marklt hidemark"></div>
+	    		<div id="marklb" name="mark"  class="marklb hidemark"></div>
+	    		<div id="markrt" name="mark"  class="markrt hidemark"></div>
+	    		<div id="markrb" name="mark"  class="markrb hidemark"></div>  
+    	</div>
+    </div>
+    <script>
+    	//var objframe = $("#objframe");
+    	//objframe.draggable();
+    	//objframe.draggable("disable");
+    	/*
+    	objframe.on('click', function() {
+    		var objframe = $("#objframe");
+    		var drag = $("#objframe").draggable("option", "disabled");
+    		console.log(drag);
+    		$("#objframe").draggable(drag?"enable":"disable");
+    		$("[name=mark]").removeClass(drag?"hidemark":"showmark").addClass(drag?"showmark":"hidemark");
+    	})
+    	*/
+    </script>    
+</body>
+</html>

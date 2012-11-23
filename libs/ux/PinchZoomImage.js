@@ -59,7 +59,7 @@ Ext.define('Ext.ux.PinchZoomImage', {
 						this.setIsBGFrozen(false);
 					}
 					console.log(el);
-					$("#dbg").text("");
+					//$("#dbg").text("");
 				},	
 				element: 'element',
 			},
@@ -223,7 +223,14 @@ Ext.define('Ext.ux.PinchZoomImage', {
 			var xform = Ext.create('Ext.ux.Transform');
 			ctx.getTransform = function(){ return xform; };
 			
+			ctx.cloneMatrix = function() {
+				return xform.cloneMatrix();
+			}
+			
 			var savedTransforms = [];
+			ctx.savedTransforms = function() {
+				return savedTransforms;
+			}
 	
 			var save = ctx.save;
 			ctx.save = function(){
@@ -246,13 +253,26 @@ Ext.define('Ext.ux.PinchZoomImage', {
 			};
 			
 			var scale = ctx.scale;
-				ctx.scale = function(sx,sy){
+			ctx.scale = function(sx,sy){
 				xform.scale(sx,sy);
 				return scale.call(ctx,sx,sy);
 			};
 			
+			var rotate = ctx.rotate;
+			ctx.rotate = function(rad){
+				xform.rotate(rad);
+				return rotate.call(ctx,rad);
+			};
+			
 			var pt  = {x:0, y:0};
 			var setTransform = ctx.setTransform;
+			ctx.setTransformByMatrix = function(m){
+				xform.setMatrix(m);
+				return setTransform.call(ctx,m[0],m[1],m[2],m[3],m[4],m[5]);
+			};
+						
+			var transform = ctx.transform;
+			
 			ctx.transformedPoint = function(x,y){
 				var xform2 = xform.clone();
 				xform2.invert();
@@ -430,8 +450,8 @@ Ext.define('Ext.ux.PinchZoomImage', {
 		$("#objframe").rotate(e.angle);
 		//this.zoom(e.scale-1);
 		//this.dragged = true;
-		var old = 	$("#dbg").text();	
-		$("#dbg").text(old+'&nbsp;'+parseInt(e.angle));
+		//var old = 	$("#dbg").text();	
+		//$("#dbg").text(old+'&nbsp;'+parseInt(e.angle));
 	},	
 	/**
 	 * [initCanvas image load hadler to draw it on the canvas]
