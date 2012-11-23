@@ -2,11 +2,15 @@ Ext.define("FaceShop.view.Main", {
     extend: 'Ext.Container',
     requires: ['Ext.TitleBar',
     'FaceShop.view.FaceEdit',
+    'FaceShop.view.Layout',
     'Ext.ux.PinchZoomImage'], 
     xtype:'main', 
     config: {
     	layout:'card',
         items: [
+        {
+        	xtype:'facelayout'
+        },
         {
         		xtype:'faceedit',
 	    }, {
@@ -60,14 +64,18 @@ Ext.define("FaceShop.view.Main", {
 	    		}, {
 	    			text:'convert',
 	    			handler:function() {
+						var sources = {
+				          item: "resources/images/a.png",
+				          face: "resources/images/b.png"
+				        };
+				        var controller = FaceShop.app.getController('Main');
+				        var callback = function(images) {
+				        	controller.initStage(images);
+				        }
+				        controller.loadImages(sources, null);
 	    				
 	    				
-	    				
-	    				
-	    				//var src;
-	    				//var dest = Ext.select("#dest").elements[0];
-	    				
-	    				//var dest = Ext.select("objframe").elements[0];
+	    				/*
 	    				var src = Ext.select('canvas').elements[0];//.parentElement;
 	    				
 	    				//src = Ext.select("#src").elements[0];
@@ -84,6 +92,7 @@ Ext.define("FaceShop.view.Main", {
 	    					}
 	    					
 	    				});
+	    				*/
 	    			}
 	    		}
 	    		]
