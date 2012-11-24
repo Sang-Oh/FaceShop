@@ -19,6 +19,18 @@
 			margin-left:12px;
 			margin-right:6px;
 		}
+		.stylebox {
+			border:solid;
+			border-width:1px;
+			width:140px;
+			height:140px;
+			padding:10px;
+			margin:10px;
+		}
+		.styleimg {
+			height:100%;
+			width:100%;
+		}
 		.thumbnailcontainer {
 			position:absolute;left:0px;
 			bottom:0px;height:60px;width:100%;background-color:#111111;opacity:0.7;
@@ -134,34 +146,6 @@
     <script id="microloader" type="text/javascript" src="touch/microloader/development.js"></script>
 
 </head>
-<body>
-    <div id="appLoadingIndicator">
-        <div></div>
-        <div></div>
-        <div></div>
-    </div>
-    <div id="fakeframe" style="display:none;">
-    	<div id="objframe"  name="mark" class="objframe hidemark">
- 	    		<img src="resources/images/a.png" name="objimg" class="objimg"/>
-	    		<div id="marklt" name="mark" class="marklt hidemark"></div>
-	    		<div id="marklb" name="mark"  class="marklb hidemark"></div>
-	    		<div id="markrt" name="mark"  class="markrt hidemark"></div>
-	    		<div id="markrb" name="mark"  class="markrb hidemark"></div>  
-    	</div>
-    </div>
-    <script>
-    	//var objframe = $("#objframe");
-    	//objframe.draggable();
-    	//objframe.draggable("disable");
-    	/*
-    	objframe.on('click', function() {
-    		var objframe = $("#objframe");
-    		var drag = $("#objframe").draggable("option", "disabled");
-    		console.log(drag);
-    		$("#objframe").draggable(drag?"enable":"disable");
-    		$("[name=mark]").removeClass(drag?"hidemark":"showmark").addClass(drag?"showmark":"hidemark");
-    	})
-    	*/
-    </script>    
+<body id="loading" style="width:100%;height:100%;background: url(resources/images/background1.png) center no-repeat;background-size:100% 100%;">
 </body>
 </html>

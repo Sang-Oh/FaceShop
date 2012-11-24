@@ -3,61 +3,107 @@ Ext.define("FaceShop.view.Layout", {
     requires: ['Ext.TitleBar',
     'Ext.carousel.Carousel',
     'Ext.dataview.DataView',
+    'Ext.ActionSheet',
     'Ext.data.Store',
     'Ext.ux.PinchZoomImage'],   
     xtype:'facelayout',
     config: {
     	layout:'fit',
-    	html:'<div id="facecontainer" style="position:absolute;background-color:yellow;width:100%;height:100%;"></div>',
+    	html:'<div id="facecontainer" style="background:url(resources/images/background.png) center no-repeat;background-size:100% 100%;position:absolute;background-color:#000;width:100%;height:100%;"></div>',
         items: [
+
+        {
+        	xtype:'container',
+        	padding:10,
+        	items:[
+        	{
+        		xtype:'button',
+        		text:'Home',
+        		style:'float:left',
+        		width:'5em',
+        		ui:'normal',
+        		action:'back',
+        		
+        	},
+        	{
+        		xtype:'button',
+        		text:'Menu',
+        		style:'float:right',
+        		width:'5em',
+        		action:'menu',
+        	}
+        	
+        	]
+        },
+
  	            {
 	            	xtype:'container',
 	            	
 	            	docked:'bottom',
 	            	cls:'thumbnailcontainer',
-	            	layout:'fit',
 	            	items:[
 	            	{
 	                    xtype: 'dataview',
 	                    height:'100%',
-	                    scrollable: 'horizontal',
+	                    scrollable:'horizontal',
 	                    inline: {
 	                        wrap: false
 	                    },
 	                    //set the itemtpl to show the fields for the store
-	                    itemTpl: '<img src="{src}" class="thumbnailimg"/>',
+	                    itemTpl: '<img src="{thumb}" class="thumbnailimg" />',
+	                    store:'FaceItem',
+	                    /*
 	    				data:[
-	    				{src:'resources/images/a.png'},
-	    				{src:'resources/images/1.png'},
-	    				{src:'resources/images/2.png'},
-	    				{src:'resources/images/a.png'},
-	    				{src:'resources/images/3.png'},
-	    				{src:'resources/images/4.png'},
-	    				{src:'resources/images/0.png'},
-	    				{src:'resources/images/1.png'},
-	    				{src:'resources/images/2.png'},
-	    				{src:'resources/images/a.png'},
-	    				{src:'resources/images/3.png'},
-	    				{src:'resources/images/4.png'},
-	    				{src:'resources/images/a.png'},
-	    				{src:'resources/images/0.png'},
-	    				{src:'resources/images/1.png'},
-	    				{src:'resources/images/2.png'},
-	    				{src:'resources/images/a.png'},
-	    				{src:'resources/images/3.png'},
-	    				{src:'resources/images/4.png'},
-	    				{src:'resources/images/a.png'},
+	    				{thumb:'resources/images/itemsmall/cap11s.png', item:'resources/images/item/cap11.png'},
+	    				{thumb:'resources/images/itemsmall/cap1s.png', item:'resources/images/item/cap1.png'},
+	    				{thumb:'resources/images/itemsmall/cap2s.png', item:'resources/images/item/cap2.png'},
+	    				{thumb:'resources/images/itemsmall/cap3s.png', item:'resources/images/item/cap3.png'},
+	    				{thumb:'resources/images/itemsmall/cap4s.png', item:'resources/images/item/cap4.png'},
+	    				{thumb:'resources/images/itemsmall/hat1s.png', item:'resources/images/item/hat1.png'},
+	    				{thumb:'resources/images/itemsmall/hat2s.png', item:'resources/images/item/hat2.png'},
 	    				]
+	    				*/
 	            	}
 	            	]
 	            	
 	            }
+	            
 	           
 		],
 		listeners:{
 			scope:this,
 			initialize:function(cmp) {
 			},
+			doubletap: {
+				fn :function (e, el, obj) {
+					this.fireEvent('doubletap', e, el,obj);
+				},	
+				element: 'element',				
+			},
+			rotate: {
+				fn :function (e, el, obj) {
+					this.fireEvent('rotate', e, el,obj);
+				},	
+				element: 'element',				
+			},
+			pinchstart: {
+				fn :function (e, el, obj) {
+					this.fireEvent('pinchstart', e, el,obj);
+				},	
+				element: 'element',
+			},
+			pinchend: {
+				fn : function (e, el, obj) {
+					this.fireEvent('pinchend', e, el,obj);
+				},	
+				element: 'element',
+			},	
+			pinch : {
+				fn : function (e, el, obj) {	
+					this.fireEvent('pinch', e, el,obj);
+				},	
+				element: 'element',
+			},		
 		}		
 	},
 	

@@ -1,0 +1,28 @@
+Ext.define('FaceShop.model.Style',{
+	extend:'Ext.data.Model',
+	requires:['Ext.data.identifier.Uuid'],
+	config:{
+		identifier: 'uuid',
+		fields:[
+		{
+			name:'thumb',
+			type:'string'	
+		},{
+			name:'item',
+			type:'string'				
+		},{
+			name:'style',
+			type:'strig'				
+		},{
+			name:'shop',
+			type:'strig'				
+		},{
+			name:'model',
+			type:'strig'				
+		},{
+			name:'layout',
+			type:'string'				
+		}
+		]
+	}
+})

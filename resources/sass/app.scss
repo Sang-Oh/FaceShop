@@ -1,30 +1,79 @@
+$base-color:#944f1c;
 @import 'sencha-touch/default/all';
-
+$include-default-icons:false;
 // You may remove any of the following modules that you
 // do not use in order to create a smaller css file.
 @include sencha-panel;
 @include sencha-buttons;
 @include sencha-sheet;
-@include sencha-picker;
-@include sencha-tabs;
+//@include sencha-picker;
+//@include sencha-tabs;
 @include sencha-toolbar;
-@include sencha-toolbar-forms;
-@include sencha-indexbar;
+//@include sencha-toolbar-forms;
+//@include sencha-indexbar;
 @include sencha-list;
 @include sencha-layout;
-@include sencha-carousel;
-@include sencha-form;
-@include sencha-msgbox;
+//@include sencha-carousel;
+//@include sencha-form;
+//@include sencha-msgbox;
+@include sencha-loading-spinner;
 
 
-    .x-toolbar-transparent {
-    background-color : transparent;
-
-    &.x-docked-bottom {
-        border-top : 0;
-    }
-    &.x-docked-top {
-        border-bottom : 0;
-    }
+.btnMenu1 {
+  background: url(../images/home/main1.png) !important;
+  background-size: 50px 40px;
+  width: 50px;
+  height: 40px;
+  background-color : transparent;
+  border : 0px;
 }
+
+.btnMenu1Pressed {
+  background: url(../images/home/main1.png) !important;
+  background-size: 50px 40px;
+  width: 50px;
+  height: 40px;
+  background-color : transparent;
+  border : 0px;
+}
+
+.btnMenu2 {
+  background: url(../images/home/main2.png) !important;
+  background-size: 50px 40px;
+  width: 50px;
+  height: 40px;
+  background-color : transparent;
+  border : 0px;
+}
+
+.btnMenu2Pressed {
+  background: url(../images/home/main2.png) !important;
+  background-size: 50px 40px;
+  width: 50px;
+  height: 40px;
+  background-color : transparent;
+  border : 0px;
+}
+
+
+
+.btnMenu3 {
+  background: url(../images/home/main3.png) !important;
+  background-size: 50px 40px;
+  width: 50px;
+  height: 40px;
+  background-color : transparent;
+  border : 0px;
+}
+
+.btnMenu3Pressed {
+  background: url(../images/home/main3.png) !important;
+  background-size: 50px 40px;
+  width: 50px;
+  height: 40px;
+  background-color : transparent;
+  border : 0px;
+}
+
+
 // Your custom code goes here...

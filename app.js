@@ -8,12 +8,15 @@ Ext.Loader.setPath({
 
 Ext.application({
     name: 'FaceShop',
-
+  	viewport: {
+        autoMaximize: true
+    },
     requires: [
         'Ext.MessageBox'
     ],
+    stores:['Style','FaceItem','Face'],
 	controllers:['Main'],
-    views: ['Main'],
+    views: ['Main','StyleCompare'],
 
     icon: {
         '57': 'resources/icons/Icon.png',
@@ -35,10 +38,11 @@ Ext.application({
 
     launch: function() {
         // Destroy the #appLoadingIndicator element
-        Ext.fly('appLoadingIndicator').destroy();
+        //Ext.fly('appLoadingIndicator').destroy();
 
         // Initialize the main view
         Ext.Viewport.add(Ext.create('FaceShop.view.Main'));
+        Ext.Viewport.add(Ext.create('FaceShop.view.StyleCompare'));
     },
 
     onUpdated: function() {

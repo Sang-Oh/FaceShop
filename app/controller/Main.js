@@ -4,22 +4,281 @@ Ext.define('FaceShop.controller.Main', {
 	launch:function() {
 	},
 	config: {
-		userInfo:null,		
+		userInfo:null,	
+		anchors:[],	
+		faceItem:null,
+		faceItemGroup:null,
+		face:null,
+		faceGroup:null,
+		stage:null,
+		isSelectedFace:false,
+		isSelectedFaceItem:false,
+		selectedItem:null,
 		refs: {
-			face:'pinchzoomimage',
-			editView:'faceedit',
+			main:'main',
+			faceHome:'facehome',
+			faceLayout:'facelayout',
+			faceList:'facelist',
+			styleList:'stylelist',
+			styleView:'styleview',
 			editPinch:'faceedit pinchzoomimage',
 		},
 		control:{
-			'faceedit dataview':{
+			'viewport': {
+				orientationchange:'onOrientationChange'
+			},
+			'button[action=takephoto]':{
+				tap:'onMenuToHome'
+			},
+			'facehome button[action=takephoto]': {
+				tap:'onMenuTakePhoto'
+			},
+			'facehome button[action=selectphoto]': {
+				tap:'onMenuSelectPhoto'
+			},
+			'facehome button[action=selectstyle]': {
+				tap:'onMenuSelectStyle'
+			},
+			'facelayout button[action=back]': {
+				tap:'onBackFromFaceLayout'
+			},
+			'facelayout button[action=save]': {
+				tap:'onSaveFaceLayout'
+			},
+			'facelayout button[action=menu]': {
+				tap:'onLayoutMenu'
+			},
+			'facelist button[action=back]': {
+				tap:'onBackFromFaceList'
+			},
+			'facelist':{
+				itemsingletap:'onItemSelectFromFaceList'
+			},
+			'stylelist button[action=back]': {
+				tap:'onBackFromStyleList'
+			},
+			'stylelist button[action=home]': {
+				tap:'onMenuToHome'
+			},
+			'stylelist':{
+				itemsingletap:'onItemSelectFromStyleList'
+			},
+			'styleview button[action=buy]': {
+				tap:'onBuy'
+			},
+			'styleview button[action=back]': {
+				tap:'onBackFromStyleView'
+			},
+			'stylecompare dataview': {
+				itemdoubletap:'onItemSelectFromStyleCompare'
+			},
+
+
+			'facelayout':{
+				activate:'onActivateFaceLayout',
+				pinchstart:'onPinchStart',
+				pinchend:'onPinchEnd',
+				pinch:'onPinch',
+				rotate:'onRotate',
+				doubletap:'onDoubleTap'
+			},
+			'facelayout dataview':{
 				itemsingletap:'onItemSelectFromFaceEdit'
 			}
 		}
 	},
+	onLayoutMenu:function() {
+		var controller = this;
+		var actionSheet = Ext.create('Ext.ActionSheet', {
+	    items: [
+		        {
+		            text: 'Save Style',
+		            ui:'confirm',
+		            handler:function(){
+		            	actionSheet.hide();
+		            	Ext.Viewport.remove(actionSheet);
+		            	actionSheet.destroy();	
+		            	controller.onSaveFaceLayout();	            	
+		            }
+		        },
+		        {
+		            text: 'Load Face',
+		            handler:function(){
+		            	actionSheet.hide();
+		            	Ext.Viewport.remove(actionSheet);
+		            	actionSheet.destroy();
+		            	controller.getMain().setActiveItem(controller.getFaceList());
+		            }
+		        },
+		        {
+		            text: 'Upload Facebook',
+		            handler:function(){
+		            	actionSheet.hide();
+		            	Ext.Viewport.remove(actionSheet);
+		            	actionSheet.destroy();
+		            }
+		        },
+		        {
+		            text: 'Close',
+		            handler:function(){
+		            	actionSheet.hide();
+		            	Ext.Viewport.remove(actionSheet);
+		            	actionSheet.destroy();
+		            }
+		        }
+		    ]
+		});
+		
+		Ext.Viewport.add(actionSheet);
+		actionSheet.show();		  	
+	},
+	onOrientationChange:function(cmp, newOrientation, width, height, eOpts ) {
+
+        	if (newOrientation=='landscape')	
+        		Ext.Viewport.setActiveItem(1);
+        	else
+        		Ext.Viewport.setActiveItem(0);
+	},
+	onBuy:function() {
+		window.open('http://hatson.co.kr/shop/shopdetail.html?branduid=112482');
+	},
+	onMenuToHome:function() {
+		this.getMain().setActiveItem(this.getFaceHome());		
+	},
+	onSaveFaceLayout:function() {
+		if (Ext.Viewport.getMasked() == null)
+			Ext.Viewport.setMasked({xtype:'loadmask'});
+		else
+			Ext.Viewport.mask();
+		
+		
+		var controller = this;
+		var record = this.getSelectedItem();
+		//this.showAnchor(false);
+		
+		this.getStage().toDataURL({callback:function(dataUrl) {
+		
+			var store = Ext.getStore('Style');
+			var newRecord = Ext.create('FaceShop.model.Style', 
+			{style:dataUrl, thumb:record.get('thumb'), item:record.get('item'), shop:record.get('shop'), model:record.get('model'), layout:''})	;
+			store.add(newRecord);
+			Ext.Viewport.unmask();
+			//store.sync();
+			controller.getMain().setActiveItem(controller.getStyleList());}
+		});
+		
+	},
+	onBackFromFaceList:function() {
+		this.getMain().setActiveItem(this.getFaceLayout())
+	},
+	onBackFromStyleList:function() {
+		this.getMain().setActiveItem(this.getFaceLayout())
+	},
+	onBackFromStyleView:function() {
+		this.getMain().setActiveItem(this.getStyleList());
+	},
+	onBackFromFaceLayout:function() {
+		this.getMain().setActiveItem(this.getFaceHome());
+	},
+	onMenuTakePhoto:function() {
+		this.getMain().setActiveItem(this.getFaceLayout());
+	},
+	onMenuSelectPhoto:function() {
+		this.getMain().setActiveItem(this.getFaceLayout());
+	},
+	onMenuSelectStyle:function() {
+		this.getMain().setActiveItem(this.getStyleList());
+	},
+	onDoubleTap:function(e, el, obj) {
+		var face = this.getFace();
+		var faceGroup = this.getFaceGroup();
+		var rect = this.getDefaultRect(face.getImage());
+		face.setScale(1);
+		//face.setSize(rect.destWidth,rect.destHeight);
+		faceGroup.setX(rect.destX);
+		faceGroup.setY(rect.destY);
+		faceGroup.setSize(rect.destWidth,rect.destHeight);
+		this.getStage().draw();
+	},
+	onPinchEnd:function (e, el, obj) {
+
+	},
+	onPinchStart:function (e, el, obj) {
+
+	},
+	onPinch:function (e, el, obj) {
+
+		if (this.getIsSelectedFace() == true) {
+			//alert('aa');
+			this.getFace().setScale(e.scale);//, e.scale);
+			this.getStage().draw();
+		}
+	},
+	onRotate:function (e, el, obj) {
+/*
+		if (this.getIsSelectedFaceItem() == true) {
+			//alert('aa');
+			this.getFaceItem().setRotateByDeg(e.angle);//, e.scale);
+			this.getStage().draw();
+		}
+		*/
+	},
+
+	onActivateFaceLayout:function(cmp) {
+		if (this.getStage() != null) return;
+		var controller = this;
+		var store = Ext.getStore('FaceItem');
+		var record = store.getAt(0);
+		controller.setSelectedItem(record);
+		var sources = {
+		  item: record.get('item'),//"resources/images/item/cap1.png",
+		  face: "resources/images/man/iu1.png"
+		};
+		var callback = function(images) {
+			controller.initStage(images);
+		}
+		controller.loadImages(sources, null);
+	},
+	onItemSelectFromStyleCompare:function(dataview,  index,  target, record){
+		var view = this.getStyleView();
+		view.setData(record.getData());
+		this.getMain().setActiveItem(view);
+		Ext.Viewport.setActiveItem(0);		
+	},
+	onItemSelectFromStyleList:function(dataview,  index,  target, record){
+		var view = this.getStyleView();
+		view.setData(record.getData());
+		this.getMain().setActiveItem(view);
+    }, 
+	onItemSelectFromFaceList:function(dataview,  index,  target, record){
+		this.selectFace(record);
+		this.onBackFromFaceList();
+    }, 
 	onItemSelectFromFaceEdit:function (dataview,  index,  target, record){
-		var img = this.getEditPinch().getObjectImgEl();
-		img.src = record.get('src');
-    },   
+		this.selectItem(record);
+    }, 
+    selectFace:function(record) {
+ 		var controller = this;
+		var src = record.get('face');
+		var img = new Image();
+		img.onload = function() {
+			controller.getFace().setImage(img);
+			controller.getStage().draw();
+		}
+		img.src = src;    	
+    },  
+    selectItem:function(record) {
+    	this.setSelectedItem(record);
+    	
+		var controller = this;
+		var src = record.get('item');
+		var img = new Image();
+		img.onload = function() {
+			controller.getFaceItem().setImage(img);
+			controller.getStage().draw();
+		}
+		img.src = src;    	
+    },  
 	loadImages:function (sources, callback) {
 	    var images = {};
 	    var loadedImages = 0;
@@ -27,7 +286,7 @@ Ext.define('FaceShop.controller.Main', {
 	    for(var src in sources) {
 	      numImages++;
 	    }
-	    debugger;
+
 	    for(var src in sources) {
 	      images[src] = new Image();
 	      images[src].onload = function() {
@@ -38,59 +297,220 @@ Ext.define('FaceShop.controller.Main', {
 	      };
 	      images[src].src = sources[src];
 	    }
-	  },    
+	},
+	getDefaultRect:function(img) {
+		//debugger;
+		//var container = Ext.DomQuery.select('#facecontainer')[0];
+		//var container = Ext.ComponentQuery.query('facelayout')[0].element.dom;
+		//d.element.dom.offsetHeight
+    	var stageRect = {width:window.innerWidth,height:window.innerHeight};
+    	//alert(window.innerHeight);
+    	//var stageRect = {width:container.offsetParent.offsetWidth, height:container.offsetParent.offsetHeight};
+		
+		var rect={srcX:0, srcY:0, srcWidth:0, srcHeight:0, destX:0, destY:0, destWidth:0, destHeight:0, ratioWidth:0, ratioHeight:0}
+		rect.srcWidth = img.width;
+		rect.srcHeight = img.height;
+		
+		rect.destWidth = stageRect.width;
+		rect.destHeight = stageRect.height;
+						
+		rect.ratioWidth = rect.srcWidth/rect.destWidth;
+		rect.ratioHeight = rect.srcHeight/rect.destHeight;
+	
+		if (rect.ratioWidth > rect.ratioHeight) {
+			rect.destHeight = rect.srcHeight/rect.ratioWidth;
+		} else {
+			rect.destWidth = rect.srcWidth/rect.ratioHeight;
+		}
+	
+		rect.srcX = 0;
+		rect.srcY = 0;	
+		rect.destX = (stageRect.width - rect.destWidth)/2;
+		rect.destY = (stageRect.height - rect.destHeight)/2;
+		
+		//alert(rect.destHeight);
+		return rect;
+				
+	},  
     initStage:function(images) {
-	    				var container = Ext.DomQuery.select('#facecontainer')[0];
-	    				var stage = new Kinetic.Stage({
-					        container: 'facecontainer',//container.id,
-					        width: container.offsetWidth,
-					        height: container.offsetHeight,
-					      });
-					
-					      var layer = new Kinetic.Layer();
-					      
-					      
-					      var itemGroup = new Kinetic.Group({
-					          x: 270,
-					          y: 100,
-					          draggable: true
-					        });
-					      var faceGroup = new Kinetic.Group({
-					          x: 100,
-					          y: 110,
-					          draggable: true
-					      });
+    	var controller =this;
+		var container = Ext.DomQuery.select('#facecontainer')[0];
+    	var stageRect = {width:container.offsetWidth, height:container.offsetHeight};
+		var stage = new Kinetic.Stage({
+		    container: 'facecontainer',//container.id,
+		    width: stageRect.width,
+		    height: stageRect.height,
+		});
+				
+		var layer = new Kinetic.Layer();
 
-				        var itemImg = new Kinetic.Image({
-				          x: 0,
-				          y: 0,
-				          image: images.item,
-				          width: 200,
-				          height: 100,
-				          name: "image"
-				        });
-
-				        var faceImg = new Kinetic.Image({
-				          x: 200,
-				          y: 200,
-				          image: images.face,
-				          width: 200,
-				          height: 200,
-				          name: "image"
-				        });					
+		var faceImg = images.face;
+		var itemImg = images.item;
+		
+		var rect = this.getDefaultRect(faceImg);
+	
+		var itemImgK = new Kinetic.Image({
+		  x: 0,
+		  y: 0,
+		  image: itemImg,
+		  width: 230,
+		  height: 184,
+		  name: "image",
+		  //draggable: true
+		});
+		
+		this.setFaceItem(itemImgK);
+	
+		var itemGroup = new Kinetic.Group({
+			x: rect.destX+rect.destWidth/2-100 -50,
+			y: rect.destY+rect.destHeight/2-80 - 100,
+			draggable: true
+		});
+		var faceGroup = new Kinetic.Group({
+			x: rect.destX,
+			y: rect.destY,
+			draggable: true
+		});
+		
+		var faceImgK = new Kinetic.Image({
+		  x: 0,
+		  y: 0,
+		  image: faceImg,
+		  width: rect.destWidth,
+		  height: rect.destHeight,
+		  name: "image",
+		  //draggable:true,
+		});					
 				              
+		this.setFace(faceImgK);
+		this.setFaceGroup(faceGroup);
+		this.setFaceItemGroup(itemGroup);
+		itemGroup.on("mousedown touchstart", function() {
+			controller.showAnchor(true);
+			controller.setIsSelectedFace(false);
+			controller.setIsSelectedFaceItem(true);
+		});
+		faceGroup.on("mousedown touchstart", function() {
+	      controller.showAnchor(false);
+			controller.setIsSelectedFaceItem(false);
+	      controller.setIsSelectedFace(true);
+	    });
+	    						
+		faceGroup.on("dragstart", function() {
+	     // this.moveToTop();
+	    });
 
-						itemGroup.on("dragstart", function() {
-				          this.moveToTop();
-				        });
-				        						
-						faceGroup.on("dragstart", function() {
-				          this.moveToTop();
-				        });
-						faceGroup.add(faceImg);
-						itemGroup.add(itemImg);
+		stage.add(layer);
 
-        				stage.draw();
-    	
-    }
+		layer.add(faceGroup);
+		layer.add(itemGroup);
+
+		faceGroup.add(faceImgK);
+		itemGroup.add(itemImgK);	
+		
+		this.setStage(stage);
+		
+		//debugger;
+        this.addAnchor(itemGroup, 0, 0, "topLeft");
+        this.addAnchor(itemGroup, itemImgK.getWidth(), 0, "topRight");
+        this.addAnchor(itemGroup, itemImgK.getWidth(), itemImgK.getHeight(), "bottomRight");
+        this.addAnchor(itemGroup, 0, itemImgK.getHeight(), "bottomLeft");		
+
+		//layer.add(faceImg);
+		//layer.add(itemImg);
+				
+		itemGroup.moveToTop();		
+		stage.draw();	
+   	  },
+      update:function(group, activeAnchor) {
+        var topLeft = group.get(".topLeft")[0];
+        var topRight = group.get(".topRight")[0];
+        var bottomRight = group.get(".bottomRight")[0];
+        var bottomLeft = group.get(".bottomLeft")[0];
+        var image = group.get(".image")[0];
+
+        // update anchor positions
+        switch (activeAnchor.getName()) {
+          case "topLeft":
+            topRight.attrs.y = activeAnchor.attrs.y;
+            bottomLeft.attrs.x = activeAnchor.attrs.x;
+            break;
+          case "topRight":
+            topLeft.attrs.y = activeAnchor.attrs.y;
+            bottomRight.attrs.x = activeAnchor.attrs.x;
+            break;
+          case "bottomRight":
+            bottomLeft.attrs.y = activeAnchor.attrs.y;
+            topRight.attrs.x = activeAnchor.attrs.x;
+            break;
+          case "bottomLeft":
+            bottomRight.attrs.y = activeAnchor.attrs.y;
+            topLeft.attrs.x = activeAnchor.attrs.x;
+            break;
+        }
+
+        image.setPosition(topLeft.attrs.x, topLeft.attrs.y);
+
+        var width = topRight.attrs.x - topLeft.attrs.x;
+        var height = bottomLeft.attrs.y - topLeft.attrs.y;
+        if(width && height) {
+          image.setSize(width, height);
+        }
+      },
+      showAnchor:function(visible) {
+      	var anchors = this.getAnchors();
+      	var count =  anchors.length;
+      	for (var i=0; i<count; i++) {
+      		if (visible)
+      			anchors[i].show();
+      		else
+      			anchors[i].hide();
+      	}
+      },
+      addAnchor:function (group, x, y, name) {
+      	var controller = this;
+        var stage = group.getStage();
+        var layer = group.getLayer();
+
+        var anchor = new Kinetic.Circle({
+          x: x,
+          y: y,
+          stroke: "#666",
+          fill: "#ddd",
+          strokeWidth: 2,
+          radius: 8,
+          name: name,
+          visible:false,
+          draggable: true
+        });
+
+        anchor.on("dragmove", function() {
+          controller.update(group, this);
+          layer.draw();
+        });
+        anchor.on("mousedown touchstart", function() {
+          group.setDraggable(false);
+         // this.moveToTop();
+        });
+        anchor.on("dragend", function() {
+          group.setDraggable(true);
+          layer.draw();
+        });
+        // add hover styling
+        anchor.on("mouseover", function() {
+          var layer = this.getLayer();
+          document.body.style.cursor = "pointer";
+          this.setStrokeWidth(4);
+          layer.draw();
+        });
+        anchor.on("mouseout", function() {
+          var layer = this.getLayer();
+          document.body.style.cursor = "default";
+          this.setStrokeWidth(2);
+          layer.draw();
+        });
+		this.getAnchors().push(anchor);
+        group.add(anchor);
+      }
+   
 });
