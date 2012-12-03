@@ -207,11 +207,15 @@ Ext.define('FaceShop.controller.Main', {
 
 	},
 	onPinch:function (e, el, obj) {
-
-		if (this.getIsSelectedFace() == true) {
+		if (this.getFaceGroup().getDraggable() == true) {
 			//alert('aa');
-			this.getFace().setScale(e.scale);//, e.scale);
-			this.getStage().draw();
+			this.getFaceGroup().setScale(e.scale);//, e.scale);
+			this.getFaceGroup().getLayer().draw();
+		}
+		if (this.getFaceItemGroup().getDraggable() == true) {
+			//alert('aa');
+			this.getFaceItemGroup().setScale(e.scale);//, e.scale);
+			this.getFaceItemGroup().getLayer().draw();
 		}
 	},
 	onRotate:function (e, el, obj) {
@@ -356,7 +360,8 @@ Ext.define('FaceShop.controller.Main', {
 		  width: 230,
 		  height: 184,
 		  name: "image",
-		  //draggable: true
+
+		  
 		});
 		
 		this.setFaceItem(itemImgK);
@@ -364,12 +369,12 @@ Ext.define('FaceShop.controller.Main', {
 		var itemGroup = new Kinetic.Group({
 			x: rect.destX+rect.destWidth/2-100 -50,
 			y: rect.destY+rect.destHeight/2-80 - 100,
-			draggable: true
+			draggable: false
 		});
 		var faceGroup = new Kinetic.Group({
 			x: rect.destX,
 			y: rect.destY,
-			draggable: true
+			draggable: false
 		});
 		
 		var faceImgK = new Kinetic.Image({
@@ -385,15 +390,46 @@ Ext.define('FaceShop.controller.Main', {
 		this.setFace(faceImgK);
 		this.setFaceGroup(faceGroup);
 		this.setFaceItemGroup(itemGroup);
-		itemGroup.on("mousedown touchstart", function() {
+		
+		itemGroup.on("mousedown tap", function() {
+			controller.setFaceEditMode('item', controller);
+			/*
 			controller.showAnchor(true);
-			controller.setIsSelectedFace(false);
-			controller.setIsSelectedFaceItem(true);
+	      	if (controller.getIsSelectedFace() == false) {
+	     		controller.setIsSelectedFaceItem(true);
+	     		itemImgK.setStroke('#00F');
+	     		itemImgK.setStrokeWidth(1);
+	     		itemImgK.getLayer().draw();
+	     		itemGroup.setDraggable(true);
+	     	}
+	     	else {
+	     		console.log('aaa');
+	     		faceGroup.setDraggable(false);
+	     		controller.setIsSelectedFace(false);
+	     	}
+	     	*/
 		});
-		faceGroup.on("mousedown touchstart", function() {
-	      controller.showAnchor(false);
-			controller.setIsSelectedFaceItem(false);
-	      controller.setIsSelectedFace(true);
+		faceGroup.on("mousedown tap", function() {
+		
+				controller.setFaceEditMode('face', controller);
+			/*
+	      	controller.showAnchor(false);
+	      	if (controller.getIsSelectedFaceItem() == false) {
+	     		controller.setIsSelectedFace(true);
+	     		Ext.Function.defer(function(){
+				    					faceGroup.setDraggable(true);
+									}, 1000);
+	     		
+	     	}
+	     	else {
+	     		itemImgK.setStroke(null);
+	     		itemImgK.setStrokeWidth(0);
+	     		itemImgK.getLayer().draw();
+	     		itemGroup.setDraggable(false);
+	     		controller.setIsSelectedFaceItem(false);
+	     	}
+	     	*/	
+			
 	    });
 	    						
 		faceGroup.on("dragstart", function() {
@@ -422,6 +458,33 @@ Ext.define('FaceShop.controller.Main', {
 		itemGroup.moveToTop();		
 		stage.draw();	
    	  },
+   	  setFaceEditMode:function(mode, controller) {		//
+   	  	var face =controller.getFace();
+   	  	var faceItem = controller.getFaceItem();
+   	  	var faceGroup =controller.getFaceGroup();
+   	  	var faceItemGroup = controller.getFaceItemGroup();
+   	  	if (mode == 'item') {
+     		controller.showAnchor(true);	
+   	  		// clear face masking...
+   	  		faceGroup.setOpacity(0.7);
+			faceGroup.setDraggable(false);
+			faceItemGroup.setDraggable(true);
+			// hide item selection box
+     		faceItem.setStroke('#00F');
+     		faceItem.setStrokeWidth(1);
+     		faceItem.getLayer().draw();		
+		} else {
+     		controller.showAnchor(false);		
+   	  		// face group unmasking...
+   	  		faceGroup.setOpacity(1);
+			faceGroup.setDraggable(true);
+			faceItemGroup.setDraggable(false);
+			// show item selection box
+     		faceItem.setStroke(null);
+     		faceItem.setStrokeWidth(0);
+     		faceItem.getLayer().draw();	
+   	  	}
+   	  },   	  
       update:function(group, activeAnchor) {
         var topLeft = group.get(".topLeft")[0];
         var topRight = group.get(".topRight")[0];
@@ -475,9 +538,10 @@ Ext.define('FaceShop.controller.Main', {
         var anchor = new Kinetic.Circle({
           x: x,
           y: y,
-          stroke: "#666",
-          fill: "#ddd",
-          strokeWidth: 2,
+          stroke: "#00F",
+          fill: "#333",
+          opacity:0.5,
+          strokeWidth: 1,
           radius: 8,
           name: name,
           visible:false,
