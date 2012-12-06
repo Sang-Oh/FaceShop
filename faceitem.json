@@ -1,0 +1,37 @@
+{
+	'items':[
+	{
+		'model':'1234',
+		'descript':'Very nice!!',
+		'events':[
+			'hot','winter'
+		],
+		'ranks':{
+			'view':100, 'buy':50, 'like':122
+		},
+		'categorys':[
+			'hat', 'cap',
+		],
+		'tags':[
+			'winter','luxury' 
+		],
+		'thumbs':[
+			{'img':'collection/thumb/bean1.png', 'width':'128', 'height':'128'}
+		],
+		'styles':[
+			{'img':'collection/big/bean1.png', 'width':'128', 'height':'128'}
+		],
+		'market':[
+			{'shop':'HatOn', 'price':'45,000', 'url':'http://hatson.co.kr'}
+		]
+	}
+	
+	],
+	'collections':[
+		{'name':'hot', 
+			icons:[
+				{'img':'collection/hot.png', 'width:128', 'height:128'}
+			]
+		}
+	]
+}

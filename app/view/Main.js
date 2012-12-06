@@ -6,6 +6,7 @@ Ext.define("FaceShop.view.Main", {
     'FaceShop.view.StyleList',
     'FaceShop.view.FaceList',
     'FaceShop.view.StyleView',
+    'FaceShop.view.collection.Main',
     'Ext.ux.PinchZoomImage'], 
     xtype:'main', 
     config: {
@@ -21,7 +22,7 @@ Ext.define("FaceShop.view.Main", {
         	xtype:'stylelist'
         },
         {
-        	xtype:'styleview'
+        	xtype:'collectionmain'
         },
         {
         	xtype:'styleview'

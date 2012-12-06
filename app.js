@@ -8,9 +8,11 @@ Ext.Loader.setPath({
 
 Ext.application({
     name: 'FaceShop',
+  	/*
   	viewport: {
-       // autoMaximize: true
+        autoMaximize: true
     },
+    */
     requires: [
         'Ext.MessageBox'
     ],
@@ -57,3 +59,4 @@ Ext.application({
         );
     }
 });
+

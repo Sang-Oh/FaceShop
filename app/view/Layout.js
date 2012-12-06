@@ -37,32 +37,29 @@ Ext.define("FaceShop.view.Layout", {
         },
 
  	            {
-	            	xtype:'container',
-	            	
+	            	xtype:'container',            	
 	            	docked:'bottom',
 	            	cls:'thumbnailcontainer',
+	            	layout:{
+	            		type:'hbox'
+	            	},
 	            	items:[
 	            	{
+	            		width:'64px',
+	            		html:'<a id="viewcollection" href="#">collection</a>',
+	            	},	            	
+	            	{
+
 	                    xtype: 'dataview',
 	                    height:'100%',
+	                    width:'100%',
 	                    scrollable:'horizontal',
+	                    //margin:'100 0 0 0',
 	                    inline: {
 	                        wrap: false
 	                    },
-	                    //set the itemtpl to show the fields for the store
 	                    itemTpl: '<img src="{thumb}" class="thumbnailimg" />',
 	                    store:'FaceItem',
-	                    /*
-	    				data:[
-	    				{thumb:'resources/images/itemsmall/cap11s.png', item:'resources/images/item/cap11.png'},
-	    				{thumb:'resources/images/itemsmall/cap1s.png', item:'resources/images/item/cap1.png'},
-	    				{thumb:'resources/images/itemsmall/cap2s.png', item:'resources/images/item/cap2.png'},
-	    				{thumb:'resources/images/itemsmall/cap3s.png', item:'resources/images/item/cap3.png'},
-	    				{thumb:'resources/images/itemsmall/cap4s.png', item:'resources/images/item/cap4.png'},
-	    				{thumb:'resources/images/itemsmall/hat1s.png', item:'resources/images/item/hat1.png'},
-	    				{thumb:'resources/images/itemsmall/hat2s.png', item:'resources/images/item/hat2.png'},
-	    				]
-	    				*/
 	            	}
 	            	]
 	            	
@@ -73,6 +70,15 @@ Ext.define("FaceShop.view.Layout", {
 		listeners:{
 			scope:this,
 			initialize:function(cmp) {
+			},
+			tap: {
+				fn:function(e,el,obj) {
+					if (e.getTarget().id == 'viewcollection') {
+						this.fireEvent('viewcollection', e, el,obj);
+					}
+				},
+				element:'element',
+				delegate:'a'
 			},
 			doubletap: {
 				fn :function (e, el, obj) {

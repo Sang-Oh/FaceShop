@@ -21,6 +21,8 @@ Ext.define('FaceShop.controller.Main', {
 			faceList:'facelist',
 			styleList:'stylelist',
 			styleView:'styleview',
+			collectionMain:'collectionmain',
+			collectionPack:'collectionpack',
 			editPinch:'faceedit pinchzoomimage',
 		},
 		control:{
@@ -75,6 +77,7 @@ Ext.define('FaceShop.controller.Main', {
 
 
 			'facelayout':{
+				viewcollection:'viewCollection',
 				activate:'onActivateFaceLayout',
 				pinchstart:'onPinchStart',
 				pinchend:'onPinchEnd',
@@ -84,8 +87,19 @@ Ext.define('FaceShop.controller.Main', {
 			},
 			'facelayout dataview':{
 				itemsingletap:'onItemSelectFromFaceEdit'
+			},
+			
+			'collectionpack button[action=backtolayout]':{
+				tap:'backToLayout'
 			}
 		}
+	},
+	backToLayout:function() {
+		me.getMain().setActiveItem(me.getLayout());
+	},
+	viewCollection:function() {
+		var me = this;
+		me.getMain().setActiveItem(me.getCollectionMain());
 	},
 	onLayoutMenu:function() {
 		var controller = this;
@@ -213,9 +227,9 @@ Ext.define('FaceShop.controller.Main', {
 			this.getFaceGroup().getLayer().draw();
 		}
 		if (this.getFaceItemGroup().getDraggable() == true) {
-			//alert('aa');
-			this.getFaceItemGroup().setScale(e.scale);//, e.scale);
-			this.getFaceItemGroup().getLayer().draw();
+			this.getFaceItem().setScale(e.scale);//, e.scale);
+			this.updateAnchorPosition(this.getFaceItemGroup());
+			this.getFaceItem().getLayer().draw();
 		}
 	},
 	onRotate:function (e, el, obj) {
@@ -484,7 +498,31 @@ Ext.define('FaceShop.controller.Main', {
      		faceItem.setStrokeWidth(0);
      		faceItem.getLayer().draw();	
    	  	}
-   	  },   	  
+   	  },
+   	  updateAnchorPosition:function(group) {
+   	  	
+        var topLeft = group.get(".topLeft")[0];
+        var topRight = group.get(".topRight")[0];
+        var bottomRight = group.get(".bottomRight")[0];
+        var bottomLeft = group.get(".bottomLeft")[0];
+        var image = group.get(".image")[0];
+        var rect = {left:image.getX(),top:image.getY(), right:image.getX()+image.getWidth()*image.getScale().x, bottom:image.getY()+image.getHeight()*image.getScale().y};
+        
+        topLeft.attrs.x = rect.left;
+        bottomLeft.attrs.x = rect.left;
+        
+        topLeft.attrs.y = rect.top;
+        topRight.attrs.y = rect.top;
+        
+        topRight.attrs.x = rect.right;
+        bottomRight.attrs.x = rect.right;
+        
+        bottomLeft.attrs.y = rect.bottom;
+        bottomRight.attrs.y = rect.bottom;
+		
+		
+		   	  	
+   	  } ,  	  
       update:function(group, activeAnchor) {
         var topLeft = group.get(".topLeft")[0];
         var topRight = group.get(".topRight")[0];
@@ -560,6 +598,7 @@ Ext.define('FaceShop.controller.Main', {
           group.setDraggable(true);
           layer.draw();
         });
+        /*
         // add hover styling
         anchor.on("mouseover", function() {
           var layer = this.getLayer();
@@ -573,6 +612,7 @@ Ext.define('FaceShop.controller.Main', {
           this.setStrokeWidth(2);
           layer.draw();
         });
+        */
 		this.getAnchors().push(anchor);
         group.add(anchor);
       }
