@@ -1,13 +1,13 @@
-Ext.define('FaceShop.store.FaceItem', {
+Ext.define('FaceShop.store.FaceItems', {
     extend: 'Ext.data.Store',
     requires: [
         'FaceShop.model.FaceItem',
-        'Ext.data.proxy.LocalStorage'
+//        'Ext.data.proxy.LocalStorage'
     ],
     config: {
 		model: 'FaceShop.model.FaceItem',
-		//autoLoad:true,
-       
+		autoLoad:true,
+       	/*
         data:[
 		{shop:'STCO', model:'12,000', thumb:'resources/images/itemsmall/cap2.png', item:'resources/images/item/cap2.png'},
 		{shop:'STCO', model:'70,000', thumb:'resources/images/itemsmall/cap1.png', item:'resources/images/item/cap1.png'},
@@ -47,6 +47,7 @@ Ext.define('FaceShop.store.FaceItem', {
 		{shop:'STCO', model:'31,000', thumb:'resources/images/itemsmall/hat4.png', item:'resources/images/item/hat4.png'},
 		{shop:'STCO', model:'31,000', thumb:'resources/images/itemsmall/hat5.png', item:'resources/images/item/hat5.png'},
        ]
+       */
        
 	},
 

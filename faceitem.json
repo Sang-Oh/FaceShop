@@ -1,5 +1,5 @@
 {
-	'items':[
+	'faceitems':[
 	{
 		'model':'1234',
 		'descript':'Very nice!!',
@@ -16,22 +16,120 @@
 			'winter','luxury' 
 		],
 		'thumbs':[
-			{'img':'collection/thumb/bean1.png', 'width':'128', 'height':'128'}
+			{'img':'collection/small/bean1.png', 'width':'128', 'height':'128', type:'1x'}
 		],
 		'styles':[
-			{'img':'collection/big/bean1.png', 'width':'128', 'height':'128'}
+			{'img':'collection/small/bean1.png', 'width':'128', 'height':'128', type:'1x'}
 		],
-		'market':[
+		'markets':[
+			{'shop':'HatOn', 'price':'45,000', 'url':'http://hatson.co.kr'}
+		]
+	}
+,
+	{
+		'model':'1234',
+		'descript':'Very nice!!',
+		'events':[
+			'hot','winter'
+		],
+		'ranks':{
+			'view':100, 'buy':50, 'like':122
+		},
+		'categorys':[
+			'hat', 'cap',
+		],
+		'tags':[
+			'winter','luxury' 
+		],
+		'thumbs':[
+			{'img':'collection/small/bean2.png', 'width':'128', 'height':'128', type:'1x'}
+		],
+		'styles':[
+			{'img':'collection/small/bean2.png', 'width':'128', 'height':'128', type:'1x'}
+		],
+		'markets':[
+			{'shop':'HatOn', 'price':'45,000', 'url':'http://hatson.co.kr'}
+		]
+	}
+,
+	{
+		'model':'1234',
+		'descript':'Very nice!!',
+		'events':[
+			'hot','winter'
+		],
+		'ranks':{
+			'view':100, 'buy':50, 'like':122
+		},
+		'categorys':[
+			'hat', 'cap',
+		],
+		'tags':[
+			'winter','luxury' 
+		],
+		'thumbs':[
+			{'img':'collection/small/bean3.png', 'width':'128', 'height':'128', type:'1x'}
+		],
+		'styles':[
+			{'img':'collection/small/bean3.png', 'width':'128', 'height':'128', type:'1x'}
+		],
+		'markets':[
+			{'shop':'HatOn', 'price':'45,000', 'url':'http://hatson.co.kr'}
+		]
+	}
+,
+	{
+		'model':'1234',
+		'descript':'Very nice!!',
+		'events':[
+			'hot','winter'
+		],
+		'ranks':{
+			'view':100, 'buy':50, 'like':122
+		},
+		'categorys':[
+			'hat', 'cap',
+		],
+		'tags':[
+			'winter','luxury' 
+		],
+		'thumbs':[
+			{'img':'collection/small/bean4.png', 'width':'128', 'height':'128', type:'1x'}
+		],
+		'styles':[
+			{'img':'collection/small/bean4.png', 'width':'128', 'height':'128', type:'1x'}
+		],
+		'markets':[
+			{'shop':'HatOn', 'price':'45,000', 'url':'http://hatson.co.kr'}
+		]
+	}
+
+,
+	{
+		'model':'1234',
+		'descript':'Very nice!!',
+		'events':[
+			'hot','winter'
+		],
+		'ranks':{
+			'view':100, 'buy':50, 'like':122
+		},
+		'categorys':[
+			'hat', 'cap',
+		],
+		'tags':[
+			'winter','luxury' 
+		],
+		'thumbs':[
+			{'img':'collection/small/bean5.png', 'width':'128', 'height':'128', type:'1x'}
+		],
+		'styles':[
+			{'img':'collection/small/bean5.png', 'width':'128', 'height':'128', type:'1x'}
+		],
+		'markets':[
 			{'shop':'HatOn', 'price':'45,000', 'url':'http://hatson.co.kr'}
 		]
 	}
 	
 	],
-	'collections':[
-		{'name':'hot', 
-			icons:[
-				{'img':'collection/hot.png', 'width:128', 'height:128'}
-			]
-		}
-	]
 }

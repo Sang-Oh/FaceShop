@@ -9,6 +9,7 @@ Ext.define('FaceShop.view.collection.Pack', {
 			type:'vbox'
 		},
 		padding:'10 10 10 10',
+		cls:'mybg',
 		items:[
 		{
 			xtype:'dataview',
@@ -17,9 +18,26 @@ Ext.define('FaceShop.view.collection.Pack', {
             inline: {
                 wrap: false
             },			
-			style:'background-color:blue',
-			height:100,
-			itemTpl:'<img src="{img}"/>',
+			style:'border-radius: 5px; background-color:gray;line-height:100px;',
+			height:84,
+			padding:5,
+			itemTpl: new Ext.XTemplate(
+					['<img style="margin:5px;" src="{icons:this.getBestIcon}"/>'].join(''),
+					{
+						getBestIcon:function(icons) {
+							var img = '';
+							for (var i=0;i<icons.length;i++) {
+								if (icons[i].type == '1x') {
+									img = icons[i].img;
+									break;
+								}
+								img = icons[i].img;
+							}
+							return img;
+						}
+					}),
+			store:'Packs',
+			/*
 			data:[
 				{img:'resources/images/itemsmall/bean1.png'},
 				{img:'resources/images/itemsmall/bean2.png'},
@@ -31,6 +49,7 @@ Ext.define('FaceShop.view.collection.Pack', {
 				{img:'resources/images/itemsmall/bean4.png'},
 				{img:'resources/images/itemsmall/bean5.png'},
 			]
+			*/
 			
 		},{
 			xtype:'dataview',

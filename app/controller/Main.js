@@ -14,6 +14,9 @@ Ext.define('FaceShop.controller.Main', {
 		isSelectedFace:false,
 		isSelectedFaceItem:false,
 		selectedItem:null,
+		faceItemTransFormAngle:0,
+		faceItemTransFormScale:0,
+		
 		refs: {
 			main:'main',
 			faceHome:'facehome',
@@ -227,29 +230,46 @@ Ext.define('FaceShop.controller.Main', {
 			this.getFaceGroup().getLayer().draw();
 		}
 		if (this.getFaceItemGroup().getDraggable() == true) {
-			this.getFaceItem().setScale(e.scale);//, e.scale);
-			this.updateAnchorPosition(this.getFaceItemGroup());
-			this.getFaceItem().getLayer().draw();
+			
+			//Ext.getDom('viewcollection').innerText=e.angle;
+			this.setFaceItemTransFormScale(e.scale);
+			this.transformFaceItem();
 		}
 	},
+	transformFaceItem:function() {
+		var scale = this.getFaceItemTransFormScale();
+		var angle = this.getFaceItemTransFormAngle();
+		var faceItem = this.getFaceItem();
+		faceItem.setScale(scale);//, e.scale);
+		faceItem.rotateDeg(angle);
+
+		Ext.Array.forEach(this.getAnchors(), function(anchor) {
+			anchor.rotateDeg(angle);
+		});
+
+		this.updateAnchorPosition(this.getFaceItemGroup());
+		this.getStage().draw();
+	},
 	onRotate:function (e, el, obj) {
-/*
-		if (this.getIsSelectedFaceItem() == true) {
-			//alert('aa');
-			this.getFaceItem().setRotateByDeg(e.angle);//, e.scale);
-			this.getStage().draw();
+		if (this.getFaceItemGroup().getDraggable() == true) {
+			Ext.getDom('viewcollection').innerText=e.angle;
+			this.setFaceItemTransFormAngle(e.angle);
+			this.transformFaceItem();
+			
+
 		}
-		*/
 	},
 
 	onActivateFaceLayout:function(cmp) {
 		if (this.getStage() != null) return;
+
 		var controller = this;
-		var store = Ext.getStore('FaceItem');
+		var store = Ext.getStore('FaceItems');
 		var record = store.getAt(0);
 		controller.setSelectedItem(record);
+
 		var sources = {
-		  item: record.get('item'),//"resources/images/item/cap1.png",
+		  item: record.getBestStyleIcon(),
 		  face: "resources/images/man/iu1.png"
 		};
 		var callback = function(images) {
@@ -289,7 +309,7 @@ Ext.define('FaceShop.controller.Main', {
     	this.setSelectedItem(record);
     	
 		var controller = this;
-		var src = record.get('item');
+		var src = record.getBestThumbIcon();
 		var img = new Image();
 		img.onload = function() {
 			controller.getFaceItem().setImage(img);
@@ -351,15 +371,15 @@ Ext.define('FaceShop.controller.Main', {
 				
 	},  
     initStage:function(images) {
-    	var controller =this;
+    		var controller =this;
 		var container = Ext.DomQuery.select('#facecontainer')[0];
-    	var stageRect = {width:container.offsetWidth, height:container.offsetHeight};
+    		var stageRect = {width:container.offsetWidth, height:container.offsetHeight};
 		var stage = new Kinetic.Stage({
 		    container: 'facecontainer',//container.id,
 		    width: stageRect.width,
 		    height: stageRect.height,
 		});
-				
+			
 		var layer = new Kinetic.Layer();
 
 		var faceImg = images.face;
@@ -374,15 +394,14 @@ Ext.define('FaceShop.controller.Main', {
 		  width: 230,
 		  height: 184,
 		  name: "image",
-
-		  
+		  offset:[115, 92],  
 		});
 		
 		this.setFaceItem(itemImgK);
 	
 		var itemGroup = new Kinetic.Group({
-			x: rect.destX+rect.destWidth/2-100 -50,
-			y: rect.destY+rect.destHeight/2-80 - 100,
+			x: rect.destX+rect.destWidth/2 -50,
+			y: rect.destY+rect.destHeight/2 - 100,
 			draggable: false
 		});
 		var faceGroup = new Kinetic.Group({
@@ -462,9 +481,10 @@ Ext.define('FaceShop.controller.Main', {
 		
 		//debugger;
         this.addAnchor(itemGroup, 0, 0, "topLeft");
-        this.addAnchor(itemGroup, itemImgK.getWidth(), 0, "topRight");
-        this.addAnchor(itemGroup, itemImgK.getWidth(), itemImgK.getHeight(), "bottomRight");
-        this.addAnchor(itemGroup, 0, itemImgK.getHeight(), "bottomLeft");		
+        this.addAnchor(itemGroup, 0, 0, "topRight");
+        this.addAnchor(itemGroup, 0, 0, "bottomRight");
+        this.addAnchor(itemGroup, 0, 0, "bottomLeft");		
+        this.updateAnchorPosition(itemGroup); //update....position	
 
 		//layer.add(faceImg);
 		//layer.add(itemImg);
@@ -506,7 +526,11 @@ Ext.define('FaceShop.controller.Main', {
         var bottomRight = group.get(".bottomRight")[0];
         var bottomLeft = group.get(".bottomLeft")[0];
         var image = group.get(".image")[0];
-        var rect = {left:image.getX(),top:image.getY(), right:image.getX()+image.getWidth()*image.getScale().x, bottom:image.getY()+image.getHeight()*image.getScale().y};
+        var offset = {x:0,y:0};//image.getOffset();
+        var rect = {left:image.getX()-offset.x, 
+        				top:image.getY()-offset.y, 
+        				right:image.getX()+image.getWidth()*image.getScale().x-offset.x, 
+        				bottom:image.getY()+image.getHeight()*image.getScale().y-offset.y};
         
         topLeft.attrs.x = rect.left;
         bottomLeft.attrs.x = rect.left;
@@ -572,15 +596,17 @@ Ext.define('FaceShop.controller.Main', {
       	var controller = this;
         var stage = group.getStage();
         var layer = group.getLayer();
-
+        var image = group.get(".image")[0];
+        
         var anchor = new Kinetic.Circle({
           x: x,
           y: y,
+          offset:image.getOffset(),
           stroke: "#00F",
           fill: "#333",
           opacity:0.5,
           strokeWidth: 1,
-          radius: 8,
+          radius: 12,
           name: name,
           visible:false,
           draggable: true

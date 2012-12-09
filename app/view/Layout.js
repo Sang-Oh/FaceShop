@@ -58,8 +58,21 @@ Ext.define("FaceShop.view.Layout", {
 	                    inline: {
 	                        wrap: false
 	                    },
-	                    itemTpl: '<img src="{thumb}" class="thumbnailimg" />',
-	                    store:'FaceItem',
+	                    itemTpl: new Ext.XTemplate('<img src="{thumbs:this.getBestIcon}" class="thumbnailimg" />',
+	                    				{
+										getBestIcon:function(icons) {
+											var img = '';
+											for (var i=0;i<icons.length;i++) {
+												if (icons[i].type == '1x') {
+													img = icons[i].img;
+													break;
+												}
+												img = icons[i].img;
+											}
+											return img;
+										}
+									}),
+	                    store:'FaceItems',
 	            	}
 	            	]
 	            	
