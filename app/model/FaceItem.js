@@ -6,7 +6,7 @@ Ext.define('FaceShop.model.FaceItem',{
 		fields:['id','model','descript','ranks','categorys','tags','thumbs','styles','markets'],
         proxy: {
             type: 'jsonp',
-            url: 'service.php?service=collection/faceitem.json',
+            url: 'http://faceshop.osy.kr/service.php?service=collection/faceitem.json',
             reader: {
                 type: 'json',
                 rootProperty: 'faceitems'

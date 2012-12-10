@@ -11,7 +11,25 @@ Ext.define("FaceShop.view.Layout", {
     	layout:'fit',
     	html:'<div id="facecontainer" style="background:url(resources/images/background.png) center no-repeat;background-size:100% 100%;position:absolute;background-color:#000;width:100%;height:100%;"></div>',
         items: [
-
+		{
+			xtype:'titlebar',
+			docked:'top',
+			title:'Fitting',
+			items:[
+			{
+				iconCls:'backspace',
+				iconMask:true,
+				align:'left',
+        		action:'back',				
+			}, {
+				iconCls:'action',
+				iconMask:true,
+				align:'right',	
+        		action:'menu',				
+			}	
+			]
+		},
+		/*
         {
         	xtype:'container',
         	padding:10,
@@ -25,6 +43,7 @@ Ext.define("FaceShop.view.Layout", {
         		action:'back',
         		
         	},
+        	
         	{
         		xtype:'button',
         		text:'Menu',
@@ -35,7 +54,7 @@ Ext.define("FaceShop.view.Layout", {
         	
         	]
         },
-
+*/
  	            {
 	            	xtype:'container',            	
 	            	docked:'bottom',
@@ -61,7 +80,7 @@ Ext.define("FaceShop.view.Layout", {
 	                    itemTpl: new Ext.XTemplate('<img src="{thumbs:this.getBestIcon}" class="thumbnailimg" />',
 	                    				{
 										getBestIcon:function(icons) {
-											var img = '';
+												var img = '';
 											for (var i=0;i<icons.length;i++) {
 												if (icons[i].type == '1x') {
 													img = icons[i].img;
@@ -69,7 +88,7 @@ Ext.define("FaceShop.view.Layout", {
 												}
 												img = icons[i].img;
 											}
-											return img;
+											return (FaceShop.app.server+img);
 										}
 									}),
 	                    store:'FaceItems',

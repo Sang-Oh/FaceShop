@@ -17,9 +17,9 @@ Ext.application({
         'Ext.MessageBox'
     ],
     server:'http://faceshop.osy.kr/',
-    stores:['Packs','Style','FaceItems','Face'],
-	controllers:['Main'],
-    views: ['Main','StyleCompare'],
+    //stores:['Packs','Style','FaceItems','Face'],
+	//controllers:['Main'],
+    //views: ['Main','StyleCompare'],
 
     icon: {
         '57': 'resources/icons/Icon.png',
@@ -41,11 +41,13 @@ Ext.application({
 
     launch: function() {
         // Destroy the #appLoadingIndicator element
-        //Ext.fly('appLoadingIndicator').destroy();
-
+        Ext.fly('loading').destroy();
+		alert('aaaa');
+		/*
         // Initialize the main view
         Ext.Viewport.add(Ext.create('FaceShop.view.Main'));
         Ext.Viewport.add(Ext.create('FaceShop.view.StyleCompare'));
+        */
     },
 
     onUpdated: function() {

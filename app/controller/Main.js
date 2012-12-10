@@ -100,20 +100,21 @@ Ext.define('FaceShop.controller.Main', {
 				itemsingletap:'onItemSelectFromFaceEdit'
 			},
 			
-			'collectionpack button[action=backtolayout]':{
+			'collectionmain button[action=backtolayout]':{
 				tap:'backToLayout'
 			}
 		}
 	},
 	backToLayout:function() {
-		me.getMain().setActiveItem(me.getLayout());
+		var me = this;
+		me.getMain().setActiveItem(me.getFaceLayout());
 	},
 	viewCollection:function() {
 		var me = this;
 		me.getMain().setActiveItem(me.getCollectionMain());
 	},
 	onLayoutMenu:function() {
-		var controller = this;
+		var me = this;
 		var actionSheet = Ext.create('Ext.ActionSheet', {
 	    items: [
 		        {
@@ -123,7 +124,17 @@ Ext.define('FaceShop.controller.Main', {
 		            	actionSheet.hide();
 		            	Ext.Viewport.remove(actionSheet);
 		            	actionSheet.destroy();	
-		            	controller.onSaveFaceLayout();	            	
+		            	me.onSaveFaceLayout();	            	
+		            }
+		        },
+		        {
+		            text: 'Take Face',
+		            handler:function(){
+		            	actionSheet.hide();
+		            	Ext.Viewport.remove(actionSheet);
+		            	actionSheet.destroy();
+		            	me.loadFaceFromCamera();
+		            	//me.getMain().setActiveItem(controller.getFaceList());
 		            }
 		        },
 		        {
@@ -132,19 +143,12 @@ Ext.define('FaceShop.controller.Main', {
 		            	actionSheet.hide();
 		            	Ext.Viewport.remove(actionSheet);
 		            	actionSheet.destroy();
-		            	controller.getMain().setActiveItem(controller.getFaceList());
-		            }
-		        },
-		        {
-		            text: 'Upload Facebook',
-		            handler:function(){
-		            	actionSheet.hide();
-		            	Ext.Viewport.remove(actionSheet);
-		            	actionSheet.destroy();
+		            	me.loadFaceFromLibrary();
 		            }
 		        },
 		        {
 		            text: 'Close',
+		            ui:'decline',
 		            handler:function(){
 		            	actionSheet.hide();
 		            	Ext.Viewport.remove(actionSheet);
@@ -157,6 +161,21 @@ Ext.define('FaceShop.controller.Main', {
 		Ext.Viewport.add(actionSheet);
 		actionSheet.show();		  	
 	},
+	loadFaceFromCamera:function() {
+		var me = this;
+		capturePhotoFile(function(fileUri) {
+			me.selectFace(fileUri);
+		},function(message){console.log(message)});
+	},
+	loadFaceFromLibrary:function() {
+
+		var me = this;
+		getPhotoFile(function(fileUri) {
+			me.selectFace(fileUri);
+		},function(message){console.log(message)});
+	},
+	
+	
 	onOrientationChange:function(cmp, newOrientation, width, height, eOpts ) {
 
         	if (newOrientation=='landscape')	
@@ -171,16 +190,15 @@ Ext.define('FaceShop.controller.Main', {
 		this.getMain().setActiveItem(this.getFaceHome());		
 	},
 	onSaveFaceLayout:function() {
+		var me = this;
+		var record = this.getSelectedItem();
+		var stage = this.getStage();
+		me.setFaceEditMode('face', me);
+		
 		if (Ext.Viewport.getMasked() == null)
 			Ext.Viewport.setMasked({xtype:'loadmask'});
 		else
 			Ext.Viewport.mask();
-		
-		
-		var me = this;
-		var record = this.getSelectedItem();
-		var stage = this.getStage();
-		//this.showAnchor(false);
 		
 		stage.toDataURL({callback:function(dataUrl) {
 		
@@ -341,21 +359,21 @@ Ext.define('FaceShop.controller.Main', {
 		me.getMain().setActiveItem(me.getFaceLayout());	
     } ,
 	onItemSelectFromFaceList:function(dataview,  index,  target, record){
-		this.selectFace(record);
+		this.selectFace(record.get('face'));
 		this.onBackFromFaceList();
     }, 
 	onItemSelectFromFaceEdit:function (dataview,  index,  target, record){
 		this.selectItem(record);
     }, 
-    selectFace:function(record) {
- 		var controller = this;
-		var src = record.get('face');
+    selectFace:function(imgFace) {
+ 		var me = this;
+
 		var img = new Image();
 		img.onload = function() {
-			controller.getFace().setImage(img);
-			controller.getStage().draw();
+			me.getFace().setImage(img);
+			me.getStage().draw();
 		}
-		img.src = src;    	
+		img.src = imgFace;    	
     },  
     selectItem:function(record) {
 		var me = this;
@@ -457,9 +475,9 @@ Ext.define('FaceShop.controller.Main', {
 				
 	},  
     initStage:function(images) {
-    	var controller =this;
+    		var controller =this;
 		var container = Ext.DomQuery.select('#facecontainer')[0];
-    	var stageRect = {width:container.offsetWidth, height:container.offsetHeight};
+    		var stageRect = {width:container.offsetWidth, height:container.offsetHeight};
 		var stage = new Kinetic.Stage({
 		    container: 'facecontainer',//container.id,
 		    width: stageRect.width,
