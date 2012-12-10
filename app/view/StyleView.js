@@ -27,9 +27,9 @@ Ext.define("FaceShop.view.StyleView", {
 				ui:'back'
 			},{
 				xtype:'button',
-				text:'Buy',
-				action:'buy',
-				ui:'confirm',
+				text:'Edit',
+				action:'edit',
+				ui:'normal',
 				align:'right'
 			}
 			]

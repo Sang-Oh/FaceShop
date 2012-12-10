@@ -1,0 +1,38 @@
+<!DOCTYPE HTML>
+<html>
+  <head>
+    <style>
+      body {
+        margin: 0px;
+        padding: 0px;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="container"></div>
+    <script src="http://www.html5canvastutorials.com/libraries/kinetic-v4.1.2.js"></script>
+    <script>
+      var json = '{"attrs":{"width":578,"height":200,"visible":true,"listening":true,"opacity":1,"x":0,"y":0,"scale":{"x":1,"y":1},"rotation":0,"offset":{"x":0,"y":0},"draggable":false},"nodeType":"Stage","children":[{"attrs":{"clearBeforeDraw":true,"visible":true,"listening":true,"opacity":1,"x":0,"y":0,"scale":{"x":1,"y":1},"rotation":0,"offset":{"x":0,"y":0},"draggable":false},"nodeType":"Layer","children":[{"attrs":{"fontFamily":"Calibri","text":"Shadow Text!","fontSize":70,"align":"left","verticalAlign":"top","fontStyle":"normal","padding":0,"width":"auto","height":"auto","detectionType":"path","cornerRadius":0,"lineHeight":1.2,"visible":true,"listening":true,"opacity":1,"x":20,"y":20,"scale":{"x":1,"y":1},"rotation":0,"offset":{"x":0,"y":0},"draggable":false,"textStroke":"red","textStrokeWidth":2,"shadow":{"color":"black","blur":2,"offset":{"x":10,"y":10},"alpha":0.5}},"nodeType":"Shape","shapeType":"Text"},{"attrs":{"points":[{"x":50,"y":140},{"x":450,"y":160}],"lineCap":"round","dashArray":[],"detectionType":"pixel","visible":true,"listening":true,"opacity":1,"x":0,"y":0,"scale":{"x":1,"y":1},"rotation":0,"offset":{"x":0,"y":0},"draggable":false,"stroke":"green","strokeWidth":10,"lineJoin":"round","shadow":{"color":"black","blur":10,"offset":{"x":5,"y":5},"alpha":0.5}},"nodeType":"Shape","shapeType":"Line"},{"attrs":{"width":100,"height":50,"cornerRadius":0,"visible":true,"listening":true,"opacity":1,"x":280,"y":100,"scale":{"x":1,"y":1},"rotation":0.3490658503988659,"offset":{"x":0,"y":0},"draggable":false,"fill":"#00D2FF","stroke":"black","strokeWidth":4,"shadow":{"color":"black","blur":10,"offset":{"x":10,"y":10},"alpha":0.5},"id":"blueRectangle"},"nodeType":"Shape","shapeType":"Rect"},{"attrs":{"visible":true,"listening":true,"opacity":1,"x":100,"y":41,"scale":{"x":1,"y":1},"rotation":0,"offset":{"x":0,"y":0},"draggable":false,"width":106,"height":118,"id":"yodaImage"},"nodeType":"Shape","shapeType":"Image"}]}]}';
+      var stage = Kinetic.Node.create(json, 'container');
+
+      /*
+       * set functions
+       */
+      stage.get('#blueRectangle').on('mouseover mouseout', function() {
+        var stroke = this.getStroke();
+        this.setStroke(stroke === 'black' ? 'red' : 'black');
+        stage.draw();
+      });
+      /*
+       * set images
+       */
+      var imageObj = new Image();
+      imageObj.onload = function() {
+        stage.get('#yodaImage').apply('setImage', imageObj);
+        stage.draw();
+      };
+      imageObj.src = 'http://www.html5canvastutorials.com/demos/assets/yoda.jpg';
+
+    </script>
+  </body>
+</html>

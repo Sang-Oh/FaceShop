@@ -15,7 +15,12 @@ Ext.define('FaceShop.controller.Main', {
 		isSelectedFaceItem:false,
 		selectedItem:null,
 		faceItemTransFormAngle:0,
-		faceItemTransFormScale:0,
+		faceItemTransFormScale:1,
+		
+		faceImgSrc:null,
+		itemImgSrc:null,
+		
+		selectedStyle:null,
 		
 		refs: {
 			main:'main',
@@ -70,6 +75,9 @@ Ext.define('FaceShop.controller.Main', {
 			},
 			'styleview button[action=buy]': {
 				tap:'onBuy'
+			},
+			'styleview button[action=edit]': {
+				tap:'onEditStyle'
 			},
 			'styleview button[action=back]': {
 				tap:'onBackFromStyleView'
@@ -169,19 +177,27 @@ Ext.define('FaceShop.controller.Main', {
 			Ext.Viewport.mask();
 		
 		
-		var controller = this;
+		var me = this;
 		var record = this.getSelectedItem();
+		var stage = this.getStage();
 		//this.showAnchor(false);
 		
-		this.getStage().toDataURL({callback:function(dataUrl) {
+		stage.toDataURL({callback:function(dataUrl) {
 		
 			var store = Ext.getStore('Style');
 			var newRecord = Ext.create('FaceShop.model.Style', 
-			{style:dataUrl, thumb:record.get('thumb'), item:record.get('item'), shop:record.get('shop'), model:record.get('model'), layout:''})	;
+				{ style:dataUrl, 
+					thumb:record.get('thumb'), 
+					faceitemid:record.get('id'), 
+					faceimg:me.getFaceImgSrc(), 
+					itemimg:me.getItemImgSrc(), 
+					stage:stage.toJSON()}
+			);
+			
 			store.add(newRecord);
 			Ext.Viewport.unmask();
 			//store.sync();
-			controller.getMain().setActiveItem(controller.getStyleList());}
+			me.getMain().setActiveItem(me.getStyleList());}
 		});
 		
 	},
@@ -229,12 +245,14 @@ Ext.define('FaceShop.controller.Main', {
 			this.getFaceGroup().setScale(e.scale);//, e.scale);
 			this.getFaceGroup().getLayer().draw();
 		}
+		/* not applicable to faceitem
 		if (this.getFaceItemGroup().getDraggable() == true) {
 			
 			//Ext.getDom('viewcollection').innerText=e.angle;
 			this.setFaceItemTransFormScale(e.scale);
 			this.transformFaceItem();
 		}
+		*/
 	},
 	transformFaceItem:function() {
 		var scale = this.getFaceItemTransFormScale();
@@ -243,39 +261,66 @@ Ext.define('FaceShop.controller.Main', {
 		faceItem.setScale(scale);//, e.scale);
 		faceItem.rotateDeg(angle);
 
+		var anchors = this.getAnchors();
+		for (var i=0; i<anchors.length; i++) {
+		
+			anchors[i].rotateDeg(angle);
+		}
+		/*
 		Ext.Array.forEach(this.getAnchors(), function(anchor) {
+						
 			anchor.rotateDeg(angle);
 		});
-
-		this.updateAnchorPosition(this.getFaceItemGroup());
+		*/
+		//this.updateAnchorPosition(this.getFaceItemGroup());
 		this.getStage().draw();
 	},
 	onRotate:function (e, el, obj) {
-		if (this.getFaceItemGroup().getDraggable() == true) {
-			Ext.getDom('viewcollection').innerText=e.angle;
-			this.setFaceItemTransFormAngle(e.angle);
-			this.transformFaceItem();
+		var fig = this.getFaceItemGroup();
+		if (fig.getDraggable() == true) {
+			var angle = parseInt(e.angle/50);
+			Ext.getDom('viewcollection').innerText=angle;
+			fig.rotateDeg(angle);
+			fig.getLayer().draw();
+			//this.setFaceItemTransFormAngle(angle);
+			//this.transformFaceItem();
 			
 
 		}
 	},
-
 	onActivateFaceLayout:function(cmp) {
 		if (this.getStage() != null) return;
-
-		var controller = this;
-		var store = Ext.getStore('FaceItems');
-		var record = store.getAt(0);
-		controller.setSelectedItem(record);
-
-		var sources = {
-		  item: record.getBestStyleIcon(),
-		  face: "resources/images/man/iu1.png"
-		};
-		var callback = function(images) {
-			controller.initStage(images);
+		
+		var me = this;
+		var callback = null;
+		var selectedStyle = me.getSelectedStyle();
+		
+		if (selectedStyle == null) {
+			var store = Ext.getStore('FaceItems');
+			var record = store.getAt(0);
+			me.setSelectedItem(record);
+			
+			me.setItemImgSrc(record.getBestStyleIcon());
+			me.setFaceImgSrc("resources/images/man/iu1.png");
+			
+			callback = function(images) {
+				me.initStage(images);
+			}				
+		} else {
+			me.setItemImgSrc(selectedStyle.itemimg);
+			me.setFaceImgSrc(selectedStyle.faceimg);
+			
+			callback = function(images) {
+				me.loadStyle(images, selctedStyle.style);
+			}				
+						
 		}
-		controller.loadImages(sources, null);
+		var sources = {
+		  item: me.getItemImgSrc(),
+		  face: me.getFaceImgSrc()
+		};
+		
+		me.loadImages(sources, callback);
 	},
 	onItemSelectFromStyleCompare:function(dataview,  index,  target, record){
 		var view = this.getStyleView();
@@ -287,7 +332,14 @@ Ext.define('FaceShop.controller.Main', {
 		var view = this.getStyleView();
 		view.setData(record.getData());
 		this.getMain().setActiveItem(view);
-    }, 
+    },
+    onEditStyle:function() {
+    	var me = this;
+    	var view = this.getStyleView();
+		var data = view.getData();
+		me.setSelectedStyle(data);
+		me.getMain().setActiveItem(me.getFaceLayout());	
+    } ,
 	onItemSelectFromFaceList:function(dataview,  index,  target, record){
 		this.selectFace(record);
 		this.onBackFromFaceList();
@@ -306,36 +358,70 @@ Ext.define('FaceShop.controller.Main', {
 		img.src = src;    	
     },  
     selectItem:function(record) {
+		var me = this;
     	this.setSelectedItem(record);
     	
-		var controller = this;
-		var src = record.getBestThumbIcon();
+		var src = record.getBestStyleIcon();
 		var img = new Image();
+		
 		img.onload = function() {
-			controller.getFaceItem().setImage(img);
-			controller.getStage().draw();
+			me.getFaceItem().setImage(img);
+			me.getStage().draw();
 		}
-		img.src = src;    	
+		me.loadImgByJsonP(src, function(result) {
+				img.src = 'data:image/png;base64,'+result.img;
+			}, function() {
+				
+		});		
     },  
 	loadImages:function (sources, callback) {
+		var me = this;
 	    var images = {};
 	    var loadedImages = 0;
 	    var numImages = 0;
 	    for(var src in sources) {
 	      numImages++;
 	    }
+	    
 
 	    for(var src in sources) {
 	      images[src] = new Image();
 	      images[src].onload = function() {
 	        if(++loadedImages >= numImages) {
 	          //callback(images);
-	          FaceShop.app.getController('Main').initStage(images);
+	          //FaceShop.app.getController('Main').initStage(images);
+	          callback(images);
 	        }
 	      };
-	      images[src].src = sources[src];
+	      if (src == 'item') {
+	      		var img = images[src];
+	      		me.loadImgByJsonP(sources[src], function(result) {
+		      		img.src = 'data:image/png;base64,'+result.img;
+		      	},
+		      	function(result) {
+		      		images[src].src = '';
+		      	}
+	      	) 
+	      } else {
+	      		images[src].src = sources[src];		
+	      }
+	      
 	    }
 	},
+	loadImgByJsonP:function(src, callbackScuccess, callbackFail) {
+		Ext.data.JsonP.request({
+            url: src,
+            callbackKey: 'callback',         
+            method:'POST',
+            success: function(result, request) {  
+                callbackScuccess(result);
+            },
+            failure: function(response) {
+	        	callbackFail();
+		    }
+        });				
+	},
+	
 	getDefaultRect:function(img) {
 		//debugger;
 		//var container = Ext.DomQuery.select('#facecontainer')[0];
@@ -371,9 +457,9 @@ Ext.define('FaceShop.controller.Main', {
 				
 	},  
     initStage:function(images) {
-    		var controller =this;
+    	var controller =this;
 		var container = Ext.DomQuery.select('#facecontainer')[0];
-    		var stageRect = {width:container.offsetWidth, height:container.offsetHeight};
+    	var stageRect = {width:container.offsetWidth, height:container.offsetHeight};
 		var stage = new Kinetic.Stage({
 		    container: 'facecontainer',//container.id,
 		    width: stageRect.width,
@@ -390,6 +476,7 @@ Ext.define('FaceShop.controller.Main', {
 		var itemImgK = new Kinetic.Image({
 		  x: 0,
 		  y: 0,
+		  id:"itemImg",
 		  image: itemImg,
 		  width: 230,
 		  height: 184,
@@ -400,11 +487,13 @@ Ext.define('FaceShop.controller.Main', {
 		this.setFaceItem(itemImgK);
 	
 		var itemGroup = new Kinetic.Group({
+			id:"itemGroup",
 			x: rect.destX+rect.destWidth/2 -50,
 			y: rect.destY+rect.destHeight/2 - 100,
 			draggable: false
 		});
 		var faceGroup = new Kinetic.Group({
+			id:"faceGroup",
 			x: rect.destX,
 			y: rect.destY,
 			draggable: false
@@ -413,6 +502,7 @@ Ext.define('FaceShop.controller.Main', {
 		var faceImgK = new Kinetic.Image({
 		  x: 0,
 		  y: 0,
+		  id:"faceImg",
 		  image: faceImg,
 		  width: rect.destWidth,
 		  height: rect.destHeight,
@@ -598,10 +688,13 @@ Ext.define('FaceShop.controller.Main', {
         var layer = group.getLayer();
         var image = group.get(".image")[0];
         
+        var imageOffset = image.getOffset();
+        //imageOffset.x -= x;
+        //imageOffset.y -= y;
         var anchor = new Kinetic.Circle({
           x: x,
           y: y,
-          offset:image.getOffset(),
+          offset:imageOffset,
           stroke: "#00F",
           fill: "#333",
           opacity:0.5,
@@ -641,6 +734,32 @@ Ext.define('FaceShop.controller.Main', {
         */
 		this.getAnchors().push(anchor);
         group.add(anchor);
-      }
-   
+      },
+ 
+      loadStyle:function(images, style) {
+      	var node = Ext.select('#facecontainer > div');
+      	if (node.elements.length == 1) {
+      		node.removeElement(0,true);	// delete node from dom 
+      	}
+     
+      	var defaultStyle = '{"attrs":{"width":1126,"height":517,"visible":true,"listening":true,"opacity":1,"x":0,"y":0,"scale":{"x":1,"y":1},"rotation":0,"offset":{"x":0,"y":0},"draggable":false},"nodeType":"Stage","children":[{"attrs":{"clearBeforeDraw":true,"visible":true,"listening":true,"opacity":1,"x":0,"y":0,"scale":{"x":1,"y":1},"rotation":0,"offset":{"x":0,"y":0},"draggable":false},"nodeType":"Layer","children":[{"attrs":{"visible":true,"listening":true,"opacity":0.7,"x":364.3046776232617,"y":0,"scale":{"x":1,"y":1},"rotation":0,"offset":{"x":0,"y":0},"draggable":false,"id":"faceGroup"},"nodeType":"Group","children":[{"attrs":{"visible":true,"listening":true,"name":"image","opacity":1,"x":0,"y":0,"scale":{"x":1,"y":1},"rotation":0,"offset":{"x":0,"y":0},"draggable":false,"id":"faceImg","width":397.3906447534766,"height":517},"nodeType":"Shape","shapeType":"Image"}]},{"attrs":{"visible":true,"listening":true,"opacity":1,"x":513,"y":158.5,"scale":{"x":1,"y":1},"rotation":0,"offset":{"x":0,"y":0},"draggable":true,"id":"itemGroup"},"nodeType":"Group","children":[{"attrs":{"visible":true,"listening":true,"name":"image","opacity":1,"x":0,"y":0,"scale":{"x":1,"y":1},"rotation":0,"offset":{"x":115,"y":92},"draggable":false,"id":"itemImg","width":230,"height":184,"stroke":"#00F","strokeWidth":1},"nodeType":"Shape","shapeType":"Image"},{"attrs":{"radius":12,"visible":true,"listening":true,"name":"topLeft","opacity":0.5,"x":0,"y":0,"scale":{"x":1,"y":1},"rotation":0,"offset":{"x":115,"y":92},"draggable":true,"stroke":"#00F","fill":"#333","strokeWidth":1},"nodeType":"Shape","shapeType":"Circle"},{"attrs":{"radius":12,"visible":true,"listening":true,"name":"topRight","opacity":0.5,"x":230,"y":0,"scale":{"x":1,"y":1},"rotation":0,"offset":{"x":115,"y":92},"draggable":true,"stroke":"#00F","fill":"#333","strokeWidth":1},"nodeType":"Shape","shapeType":"Circle"},{"attrs":{"radius":12,"visible":true,"listening":true,"name":"bottomRight","opacity":0.5,"x":230,"y":184,"scale":{"x":1,"y":1},"rotation":0,"offset":{"x":115,"y":92},"draggable":true,"stroke":"#00F","fill":"#333","strokeWidth":1},"nodeType":"Shape","shapeType":"Circle"},{"attrs":{"radius":12,"visible":true,"listening":true,"name":"bottomLeft","opacity":0.5,"x":0,"y":184,"scale":{"x":1,"y":1},"rotation":0,"offset":{"x":115,"y":92},"draggable":true,"stroke":"#00F","fill":"#333","strokeWidth":1},"nodeType":"Shape","shapeType":"Circle"}]}]}]}';
+    	
+    	var me =this;
+		var container = Ext.DomQuery.select('#facecontainer')[0];
+		
+		var stage = Kinetic.Node.create(style==null?defaultStyle:style, 'facecontainer');
+		
+		anchors:[],	
+		me.setFaceItem(stage.get('#itemImg')[0]);
+		me.setFace(stage.get('#faceImg')[0]);
+		me.setFaceItemGroup(stage.get('#itemGroup')[0]);
+		me.setFaceGroup(stage.get('#faceGroup')[0]);
+		me.setFaceItemGroup(stage.get('#faceItemGroup')[0]);
+		me.setStage(stage);
+		
+		stage.get('#faceImg').apply('setImage', images.face);
+		stage.get('#itemImg').apply('setImage', images.item);
+		stage.draw();   
+		
+	}
 });

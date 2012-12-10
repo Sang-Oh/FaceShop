@@ -23,7 +23,7 @@ Ext.define('FaceShop.model.Pack',{
         */
         proxy: {
             type: 'jsonp',
-            url: 'service.php?service=pack.json',
+            url: 'service.php?service=collection/pack.json',
             reader: {
                 type: 'json',
                 rootProperty: 'collections'

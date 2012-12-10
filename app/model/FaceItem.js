@@ -3,10 +3,10 @@ Ext.define('FaceShop.model.FaceItem',{
 	requires:[
 	],
 	config:{
-		fields:['model','descript','ranks','categorys','tags','thumbs','styles','markets'],
+		fields:['id','model','descript','ranks','categorys','tags','thumbs','styles','markets'],
         proxy: {
             type: 'jsonp',
-            url: 'service.php?service=faceitem.json',
+            url: 'service.php?service=collection/faceitem.json',
             reader: {
                 type: 'json',
                 rootProperty: 'faceitems'
@@ -17,6 +17,6 @@ Ext.define('FaceShop.model.FaceItem',{
 		return FaceShop.app.server+this.get('thumbs')[0].img;
 	},
 	getBestStyleIcon:function() {
-		return FaceShop.app.server+this.get('styles')[0].img;
+		return FaceShop.app.server+'file.php?file='+this.get('styles')[0].img;
 	}
 })

@@ -16,7 +16,7 @@ Ext.application({
     requires: [
         'Ext.MessageBox'
     ],
-    server:'http://192.168.0.15/~sang/faceshop/',
+    server:'http://faceshop.osy.kr/',
     stores:['Packs','Style','FaceItems','Face'],
 	controllers:['Main'],
     views: ['Main','StyleCompare'],

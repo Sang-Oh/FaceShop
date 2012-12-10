@@ -5,23 +5,20 @@ Ext.define('FaceShop.model.Style',{
 		identifier: 'uuid',
 		fields:[
 		{
-			name:'thumb',
-			type:'string'	
-		},{
-			name:'item',
-			type:'string'				
+			name:'faceitemid',
+			type:'int'				
 		},{
 			name:'style',
-			type:'strig'				
-		},{
-			name:'shop',
-			type:'strig'				
-		},{
-			name:'model',
-			type:'strig'				
-		},{
-			name:'layout',
 			type:'string'				
+		},{
+			name:'stage',
+			type:'string'				
+		}, {
+			name:'faceimg',
+			type:'string'
+		}, {
+			name:'itemimg',
+			type:'string'
 		}
 		]
 	}
