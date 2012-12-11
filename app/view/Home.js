@@ -17,7 +17,8 @@ Ext.define("FaceShop.view.Home", {
 			{
 				xtype:'spacer'
 			},{
-				cls:'btnMenu1',
+				text:'fdsff',
+				//cls:'btnMenu1',
 				pressedCls:'btnMenu1Pressed',
 				action:'takephoto'
 			}, {
