@@ -16,6 +16,7 @@ Ext.define('FaceShop.controller.Main', {
 		selectedItem:null,
 		faceItemTransFormAngle:0,
 		faceItemTransFormScale:1,
+		rotateGuideLine:null,
 		
 		faceImgSrc:null,
 		itemImgSrc:null,
@@ -39,6 +40,9 @@ Ext.define('FaceShop.controller.Main', {
 			},
 			'button[action=takephoto]':{
 				tap:'onMenuToHome'
+			},
+			'button[action=viewcollection]':{
+				tap:'viewCollection'
 			},
 			'facehome button[action=takephoto]': {
 				tap:'onMenuTakePhoto'
@@ -88,7 +92,7 @@ Ext.define('FaceShop.controller.Main', {
 
 
 			'facelayout':{
-				viewcollection:'viewCollection',
+
 				activate:'onActivateFaceLayout',
 				pinchstart:'onPinchStart',
 				pinchend:'onPinchEnd',
@@ -102,8 +106,25 @@ Ext.define('FaceShop.controller.Main', {
 			
 			'collectionmain button[action=backtolayout]':{
 				tap:'backToLayout'
-			}
+			},
+			'#packicon':{
+				itemsingletap:'onItemTapFromPackIcon'
+			},
+			'#faceitemicon':{
+				itemsingletap:'onItemTapFromFaceItem'
+			}			
 		}
+	},
+	onItemTapFromFaceItem:function(cmp,index,target,record) {
+		this.selectFaceItem(record);
+		this.backToLayout();
+	},
+	onItemTapFromPackIcon:function(cmp,index,target,record) {
+		var faceitemstore = Ext.getStore('FaceItems');
+		var extraParams = {packname:record.get('name'), packtype:record.get('type')};
+		faceitemstore.removeAll();
+		faceitemstore.getProxy().setExtraParams(extraParams);
+		faceitemstore.load();
 	},
 	backToLayout:function() {
 		var me = this;
@@ -258,11 +279,27 @@ Ext.define('FaceShop.controller.Main', {
 
 	},
 	onPinch:function (e, el, obj) {
-		if (this.getFaceGroup().getDraggable() == true) {
+		var facegroup = this.getFaceGroup();
+		if (facegroup.getDraggable() == true) {
 			//alert('aa');
-			this.getFaceGroup().setScale(e.scale);//, e.scale);
-			this.getFaceGroup().getLayer().draw();
+			var scale = facegroup.getScale().x;
+			
+			scale = scale*(1+ (e.scale-1)/10);
+			console.log('scale:'+e.scale);
+			facegroup.setScale(scale);
+			facegroup.getLayer().draw();
 		}
+
+		var faceitemgroup = this.getFaceItemGroup();
+		if (faceitemgroup.getDraggable() == true) {
+			//alert('aa');
+			var scale = faceitemgroup.getScale().x;
+			scale = scale*(1+ (e.scale-1)/10);
+			console.log('scale:'+e.scale);
+			faceitemgroup.setScale(scale);
+			faceitemgroup.getLayer().draw();
+		}
+
 		/* not applicable to faceitem
 		if (this.getFaceItemGroup().getDraggable() == true) {
 			
@@ -297,7 +334,6 @@ Ext.define('FaceShop.controller.Main', {
 		var fig = this.getFaceItemGroup();
 		if (fig.getDraggable() == true) {
 			var angle = parseInt(e.angle/50);
-			Ext.getDom('viewcollection').innerText=angle;
 			fig.rotateDeg(angle);
 			fig.getLayer().draw();
 			//this.setFaceItemTransFormAngle(angle);
@@ -363,7 +399,7 @@ Ext.define('FaceShop.controller.Main', {
 		this.onBackFromFaceList();
     }, 
 	onItemSelectFromFaceEdit:function (dataview,  index,  target, record){
-		this.selectItem(record);
+		this.selectFaceItem(record);
     }, 
     selectFace:function(imgFace) {
  		var me = this;
@@ -375,7 +411,7 @@ Ext.define('FaceShop.controller.Main', {
 		}
 		img.src = imgFace;    	
     },  
-    selectItem:function(record) {
+    selectFaceItem:function(record) {
 		var me = this;
     	this.setSelectedItem(record);
     	
@@ -477,7 +513,8 @@ Ext.define('FaceShop.controller.Main', {
     initStage:function(images) {
     		var controller =this;
 		var container = Ext.DomQuery.select('#facecontainer')[0];
-    		var stageRect = {width:container.offsetWidth, height:container.offsetHeight};
+    	var stageRect = {width:container.offsetWidth, height:container.offsetHeight};
+ 
 		var stage = new Kinetic.Stage({
 		    container: 'facecontainer',//container.id,
 		    width: stageRect.width,
@@ -503,7 +540,8 @@ Ext.define('FaceShop.controller.Main', {
 		});
 		
 		this.setFaceItem(itemImgK);
-	
+		
+		
 		var itemGroup = new Kinetic.Group({
 			id:"itemGroup",
 			x: rect.destX+rect.destWidth/2 -50,
@@ -514,7 +552,8 @@ Ext.define('FaceShop.controller.Main', {
 			id:"faceGroup",
 			x: rect.destX,
 			y: rect.destY,
-			draggable: false
+			draggable: false,
+			offset:[rect.destWidth/2, rect.destHeight/2]
 		});
 		
 		var faceImgK = new Kinetic.Image({
@@ -534,48 +573,11 @@ Ext.define('FaceShop.controller.Main', {
 		
 		itemGroup.on("mousedown tap", function() {
 			controller.setFaceEditMode('item', controller);
-			/*
-			controller.showAnchor(true);
-	      	if (controller.getIsSelectedFace() == false) {
-	     		controller.setIsSelectedFaceItem(true);
-	     		itemImgK.setStroke('#00F');
-	     		itemImgK.setStrokeWidth(1);
-	     		itemImgK.getLayer().draw();
-	     		itemGroup.setDraggable(true);
-	     	}
-	     	else {
-	     		console.log('aaa');
-	     		faceGroup.setDraggable(false);
-	     		controller.setIsSelectedFace(false);
-	     	}
-	     	*/
 		});
 		faceGroup.on("mousedown tap", function() {
-		
 				controller.setFaceEditMode('face', controller);
-			/*
-	      	controller.showAnchor(false);
-	      	if (controller.getIsSelectedFaceItem() == false) {
-	     		controller.setIsSelectedFace(true);
-	     		Ext.Function.defer(function(){
-				    					faceGroup.setDraggable(true);
-									}, 1000);
-	     		
-	     	}
-	     	else {
-	     		itemImgK.setStroke(null);
-	     		itemImgK.setStrokeWidth(0);
-	     		itemImgK.getLayer().draw();
-	     		itemGroup.setDraggable(false);
-	     		controller.setIsSelectedFaceItem(false);
-	     	}
-	     	*/	
-			
 	    });
 	    						
-		faceGroup.on("dragstart", function() {
-	     // this.moveToTop();
-	    });
 
 		stage.add(layer);
 
@@ -590,12 +592,51 @@ Ext.define('FaceShop.controller.Main', {
 		//debugger;
         this.addAnchor(itemGroup, 0, 0, "topLeft");
         this.addAnchor(itemGroup, 0, 0, "topRight");
-        this.addAnchor(itemGroup, 0, 0, "bottomRight");
         this.addAnchor(itemGroup, 0, 0, "bottomLeft");		
+        this.addAnchor(itemGroup, 0, 0, "bottomRight");
+        var star = this.addAnchor(itemGroup, 0, 0, "center");		
+        
+ 		stage.on("mouseup touchend", function(){
+ 				console.log("mouseup touchend");
+                star.controlled = false;
+            }, false);
+ 
+            stage.on("mouseout", function(){
+                star.controlled = false;
+                console.log("mouseout");
+            }, false);
+ 
+            stage.on("drag touchmove", function(evt, a, b){
+            	//debugger;
+            	console.log("touchmove",evt.pageX,evt.pageY );
+                if (star.controlled) {
+                	//debugger;
+                    var mousePos = stage.getMousePosition();
+                    var ptcenter = {x:(itemGroup.attrs.x+itemImgK.getWidth())/2, y:(itemGroup.attrs.y+itemImgK.getHeight())/2};
+                    
+                    var x,y;
+                    if (!mousePos.x) {
+                    	mousePos = {x:evt.pageX, y:evt.pageY};
+                    }
+                	x = ptcenter.x - mousePos.x;
+                	y = ptcenter.y - mousePos.y;
+
+                    star.rotation = 0.5 * Math.PI + Math.atan(y / x);
+                    var angle = star.rotation*180/Math.PI;
+                    angle = angle*0.05;
+ 
+                    if (mousePos.x <= ptcenter.x){
+                        angle *= -1;//star.rotation += Math.PI;
+                    }
+                    itemGroup.rotateDeg(angle);
+                    console.log(angle);
+                    itemGroup.getLayer().draw();
+                }
+                
+            }, false);       
+
         this.updateAnchorPosition(itemGroup); //update....position	
 
-		//layer.add(faceImg);
-		//layer.add(itemImg);
 				
 		itemGroup.moveToTop();		
 		stage.draw();	
@@ -632,7 +673,12 @@ Ext.define('FaceShop.controller.Main', {
         var topLeft = group.get(".topLeft")[0];
         var topRight = group.get(".topRight")[0];
         var bottomRight = group.get(".bottomRight")[0];
+        var bottomRight2 = group.get(".bottomRight2")[0];
         var bottomLeft = group.get(".bottomLeft")[0];
+
+        var center = group.get(".center")[0];
+        var guideline = group.get(".guideline")[0];
+
         var image = group.get(".image")[0];
         var offset = {x:0,y:0};//image.getOffset();
         var rect = {left:image.getX()-offset.x, 
@@ -648,40 +694,76 @@ Ext.define('FaceShop.controller.Main', {
         
         topRight.attrs.x = rect.right;
         bottomRight.attrs.x = rect.right;
-        
+
         bottomLeft.attrs.y = rect.bottom;
         bottomRight.attrs.y = rect.bottom;
-		
-		
-		   	  	
-   	  } ,  	  
+        
+        center.attrs.x = (topLeft.attrs.x+topRight.attrs.x)/2;
+		center.attrs.y = (topLeft.attrs.y+bottomRight.attrs.y)/2;        
+   	  },  	  
+   	  updateGuideLine:function(points) {
+   	  	var guideLine = this.getRotateGuideLine();
+   	  	guideLine.setPoints(points);
+   	  	guideLine.show();
+   	  },
       update:function(group, activeAnchor) {
         var topLeft = group.get(".topLeft")[0];
         var topRight = group.get(".topRight")[0];
         var bottomRight = group.get(".bottomRight")[0];
+        var bottomRight2 = group.get(".bottomRight2")[0];
         var bottomLeft = group.get(".bottomLeft")[0];
+        var center = group.get(".center")[0];
+        var guideLine = group.get(".guideline")[0];
         var image = group.get(".image")[0];
-
+		
         // update anchor positions
         switch (activeAnchor.getName()) {
           case "topLeft":
             topRight.attrs.y = activeAnchor.attrs.y;
             bottomLeft.attrs.x = activeAnchor.attrs.x;
-            break;
+	        center.attrs.x = (topLeft.attrs.x+topRight.attrs.x)/2;
+			center.attrs.y = (topLeft.attrs.y+bottomRight.attrs.y)/2;                    
+			break;
           case "topRight":
             topLeft.attrs.y = activeAnchor.attrs.y;
             bottomRight.attrs.x = activeAnchor.attrs.x;
-            break;
+	        center.attrs.x = (topLeft.attrs.x+topRight.attrs.x)/2;
+			center.attrs.y = (topLeft.attrs.y+bottomRight.attrs.y)/2;                    
+			break;
           case "bottomRight":
             bottomLeft.attrs.y = activeAnchor.attrs.y;
             topRight.attrs.x = activeAnchor.attrs.x;
-            break;
+	        center.attrs.x = (topLeft.attrs.x+topRight.attrs.x)/2;
+			center.attrs.y = (topLeft.attrs.y+bottomRight.attrs.y)/2;                    
+			break;            
+            /*
+            {
+            var o = {x:(topLeft.attrs.x+topRight.attrs.x)/2, y:(topLeft.attrs.y+bottomLeft.attrs.y)/2};
+           	var a = {x:topRight.attrs.x, y:bottomLeft.attrs.y};
+	        var b=  {x:bottomRight2.attrs.x, y:bottomRight2.attrs.y};
+	        var oa = Math.sqrt(Math.pow(o.x-a.x,2)+Math.pow(o.y-a.y,2));
+	        var ob = Math.sqrt(Math.pow(o.x-b.x,2)+Math.pow(o.y-b.y,2));
+	        var ab = Math.sqrt(Math.pow(b.x-a.x,2)+Math.pow(b.y-a.y,2));
+	        var angle =  Math.acos((Math.pow(oa,2)+Math.pow(ob,2)-Math.pow(ab,2)) / (2*oa*ob));
+	        angle = a.x<b.x?angle*-1:angle;
+	        
+	        angle = angle*180/Math.PI+this.getFaceItemTransFormAngle();
+	        this.setFaceItemTransFormAngle(angle);
+	        
+	        console.log("Angle:" + this.getFaceItemTransFormAngle());
+	        //group.rotateDeg(this.getFaceItemTransFormAngle());
+			//group.rotateDeg(angle);
+			group.getLayer().draw();
+            }
+            */
           case "bottomLeft":
             bottomRight.attrs.y = activeAnchor.attrs.y;
             topLeft.attrs.x = activeAnchor.attrs.x;
-            break;
+ 	        center.attrs.x = (topLeft.attrs.x+topRight.attrs.x)/2;
+			center.attrs.y = (topLeft.attrs.y+bottomRight.attrs.y)/2;                    
+			break;
         }
-
+      
         image.setPosition(topLeft.attrs.x, topLeft.attrs.y);
 
         var width = topRight.attrs.x - topLeft.attrs.x;
@@ -707,51 +789,52 @@ Ext.define('FaceShop.controller.Main', {
         var image = group.get(".image")[0];
         
         var imageOffset = image.getOffset();
-        //imageOffset.x -= x;
-        //imageOffset.y -= y;
         var anchor = new Kinetic.Circle({
-          x: x,
-          y: y,
-          offset:imageOffset,
-          stroke: "#00F",
-          fill: "#333",
-          opacity:0.5,
-          strokeWidth: 1,
-          radius: 12,
-          name: name,
-          visible:false,
-          draggable: true
-        });
+			x: x,
+			y: y,
+			offset:imageOffset,
+			stroke: "#00F",
+			fill:name=='center'?'#0F0':"#333",
+			opacity:0.5,
+			strokeWidth: 1,
+			radius: 20,
+			name: name,
+			visible:false,
+			draggable: name=='center'?false:true
+			});
+      
+        if (name != "center") {
+	        anchor.on("dragmove", function() {
+	        	//<debug>
+	        	//console.log("anchor dragmove")
+	        	//</debug>
+	          	controller.update(group, this);
+	          	layer.draw();
+	        });
+	        anchor.on("mousedown touchstart", function() {
+	        	//console.log("anchor touchstart")
+		          group.setDraggable(false);
+	         	//this.moveToTop();
+	        });
+	        anchor.on("dragend", function(cmp) {
+	            //console.log("anchor dragend")
+		      	group.setDraggable(true);
+		      	controller.updateAnchorPosition(group);
+	          	layer.draw();
+	        });
+        } else {
+	       	anchor.on("mousedown touchstart", function(evt){
+	       			group.setDraggable(false);
+	                this.angularVelocity = 0;
+	                this.controlled = true;
+	            });
+	        }
 
-        anchor.on("dragmove", function() {
-          controller.update(group, this);
-          layer.draw();
-        });
-        anchor.on("mousedown touchstart", function() {
-          group.setDraggable(false);
-         // this.moveToTop();
-        });
-        anchor.on("dragend", function() {
-          group.setDraggable(true);
-          layer.draw();
-        });
-        /*
-        // add hover styling
-        anchor.on("mouseover", function() {
-          var layer = this.getLayer();
-          document.body.style.cursor = "pointer";
-          this.setStrokeWidth(4);
-          layer.draw();
-        });
-        anchor.on("mouseout", function() {
-          var layer = this.getLayer();
-          document.body.style.cursor = "default";
-          this.setStrokeWidth(2);
-          layer.draw();
-        });
-        */
+
 		this.getAnchors().push(anchor);
         group.add(anchor);
+        
+        return anchor;
       },
  
       loadStyle:function(images, style) {

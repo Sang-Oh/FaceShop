@@ -23,10 +23,10 @@ Ext.define('FaceShop.model.Pack',{
         */
         proxy: {
             type: 'jsonp',
-            url: 'http://faceshop.osy.kr/service.php?service=collection/pack.json',
+            url: FaceShop.app.server+'service.php?name=packlist',
             reader: {
                 type: 'json',
-                rootProperty: 'collections'
+                rootProperty: 'rows'
             }
         },
 	}

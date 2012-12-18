@@ -16,7 +16,7 @@ Ext.define('FaceShop.view.IconToolbar',{
       	scope:this,
 				tap: {
 					fn: function(button) {
-						this.selectButton(button);
+						//this.selectButton(button);
       		},
       		delegate:'button'
   			},	

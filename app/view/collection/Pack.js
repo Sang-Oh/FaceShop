@@ -8,21 +8,25 @@ Ext.define('FaceShop.view.collection.Pack', {
 		layout:{
 			type:'vbox'
 		},
-		padding:'10 10 10 10',
-		cls:'mybg',
+		margin:0,
+		padding:0,
 		items:[
 		{
 			xtype:'dataview',
+			height:68,
+			id:'packicon',
             scrollable:'horizontal',
-            margin:'0 0 10 0',
             inline: {
                 wrap: false
             },			
-			style:'border-radius: 5px; background-color:gray;line-height:100px;',
-			height:84,
-			padding:5,
+			cls:'packcontainer',
+			padding:0,
+			
+           // style:' background-color:gray;',
 			itemTpl: new Ext.XTemplate(
-					['<img style="margin:5px;" src="{icons:this.getBestIcon}"/>'].join(''),
+					[
+					'<img style="margin:5px;" src="{icons:this.getBestIcon}" width=72" height="48"\/>'
+					].join(''),
 					{
 						getBestIcon:function(icons) {
 							var img = '';
@@ -33,7 +37,7 @@ Ext.define('FaceShop.view.collection.Pack', {
 								}
 								img = icons[i].img;
 							}
-							return img;
+							return FaceShop.app.server+img;
 						}
 					}),
 			store:'Packs',
@@ -53,13 +57,31 @@ Ext.define('FaceShop.view.collection.Pack', {
 			
 		},{
 			xtype:'dataview',
-			style:'background-color:green',
+			id:'faceitemicon',
+			cls:'faceitemcontainer',
             scrollable:'vertical',
             inline: {
                 wrap: true
-            },			
-			itemTpl:'<img src="{img}"/>',
+            },	
+            //itemCls:'packimg',
+			itemTpl: new Ext.XTemplate(
+					['<img style="margin:5px;" src="{styles:this.getBestIcon}" width="64" height="64"/>'].join(''),
+					{
+						getBestIcon:function(icons) {
+							var img = '';
+							for (var i=0;i<icons.length;i++) {
+								if (icons[i].type == '1x') {
+									img = icons[i].img;
+									break;
+								}
+								img = icons[i].img;
+							}
+							return FaceShop.app.server+img;
+						}
+					}),			
 			flex:1,
+			store:'FaceItems',
+			/*
 			data:[
 				{img:'resources/images/itemsmall/bean1.png'},
 				{img:'resources/images/itemsmall/bean2.png'},
@@ -80,6 +102,7 @@ Ext.define('FaceShop.view.collection.Pack', {
 				{img:'resources/images/itemsmall/bean4.png'},
 				{img:'resources/images/itemsmall/bean5.png'},				
 			]
+			*/
 		}
 		]
 	}

@@ -6,10 +6,16 @@ Ext.define('FaceShop.model.FaceItem',{
 		fields:['id','model','descript','ranks','categorys','tags','thumbs','styles','markets'],
         proxy: {
             type: 'jsonp',
-            url: 'http://faceshop.osy.kr/service.php?service=collection/faceitem.json',
+            url: FaceShop.app.server+'service.php?name=faceitem',
+            
+            extraParams:{	// default faceitem...
+            	packname:'hot',
+            	packtype:'event'
+            },
+            
             reader: {
                 type: 'json',
-                rootProperty: 'faceitems'
+                rootProperty: 'rows'
             }
         },		
 	},

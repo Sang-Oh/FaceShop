@@ -14,22 +14,24 @@ Ext.application({
     },
     */
     requires: [
-        'Ext.MessageBox'
+        //'Ext.MessageBox'
     ],
-    server:'http://faceshop.osy.kr/',
+ 
+    server:'http://faceware.cafe24.com/',
     stores:['Packs','Style','FaceItems','Face'],
 	controllers:['Main'],
     views: ['Main','StyleCompare'],
 
+/*    
     icon: {
         '57': 'resources/icons/Icon.png',
         '72': 'resources/icons/Icon~ipad.png',
         '114': 'resources/icons/Icon@2x.png',
         '144': 'resources/icons/Icon~ipad@2x.png'
     },
-
+*/
     isIconPrecomposed: true,
-
+/*
     startupImage: {
         '320x460': 'resources/startup/320x460.jpg',
         '640x920': 'resources/startup/640x920.png',
@@ -38,11 +40,12 @@ Ext.application({
         '1536x2008': 'resources/startup/1536x2008.png',
         '1496x2048': 'resources/startup/1496x2048.png'
     },
-
+*/
     launch: function() {
         // Destroy the #appLoadingIndicator element
 
         //Ext.fly('loading').destroy();
+    	//alert('aaa');
         Ext.Viewport.add(Ext.create('FaceShop.view.Main'));
         Ext.Viewport.add(Ext.create('FaceShop.view.StyleCompare'));
     },

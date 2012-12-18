@@ -14,7 +14,7 @@ Ext.define("FaceShop.view.Layout", {
 		{
 			xtype:'titlebar',
 			docked:'top',
-			title:'Fitting',
+			title:'Stage',
 			items:[
 			{
 				iconCls:'backspace',
@@ -64,14 +64,21 @@ Ext.define("FaceShop.view.Layout", {
 	            	},
 	            	items:[
 	            	{
+	            		xtype:'button',
+	            		iconCls:'hanger',
+	            		iconMask:true,
+	            		ui:'confirm',
+	            		margin:'6 6 6 6',
+	            		height:'48px',
+	            		action:'viewcollection'
+	            		/*
 	            		width:'64px',
-	            		html:'<a id="viewcollection" href="#">collection</a>',
+	            		html:'<a id="viewcollection" href="#">col</a>',
+	            		*/
 	            	},	            	
 	            	{
-
 	                    xtype: 'dataview',
-	                    height:'100%',
-	                    width:'100%',
+	                    flex:1,
 	                    scrollable:'horizontal',
 	                    //margin:'100 0 0 0',
 	                    inline: {

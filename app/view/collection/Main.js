@@ -16,7 +16,8 @@ Ext.define('FaceShop.view.collection.Main',{
 			docked:'top',
 			items:[
 			{
-				text:'back',
+				iconCls:'backspace',
+				iconMask:true,
 				ui:'back',
 				align:'left',
 				action:'backtolayout'

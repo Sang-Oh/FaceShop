@@ -17,21 +17,19 @@ Ext.define("FaceShop.view.Home", {
 			{
 				xtype:'spacer'
 			},{
-				text:'fdsff',
-				//cls:'btnMenu1',
+				text:'Enter',
+				ui:'confirm',
+				/*
+				cls:'btnMenu1',
 				pressedCls:'btnMenu1Pressed',
+				*/
 				action:'takephoto'
 			}, {
 				xtype:'spacer'
 			},{
-				cls:'btnMenu2',
-				pressedCls:'btnMenu2Pressed',
-				action:'selectphoto'
-			}, {
-				xtype:'spacer'
-			},{
-				cls:'btnMenu3',
-				pressedCls:'btnMenu3Pressed',
+				//cls:'btnMenu3',
+				text:'Styles',
+				//	pressedCls:'btnMenu3Pressed',
 				action:'selectstyle'
 			}, {
 				xtype:'spacer'
