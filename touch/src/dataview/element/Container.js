@@ -179,7 +179,8 @@ Ext.define('Ext.dataview.element.Container', {
     },
 
     updateListItem: function(record, item) {
-        var me       = this,
+		//	if (!item) return;
+    	var me       = this,
             dataview = me.dataview,
             store    = dataview.getStore(),
             index    = store.indexOf(record),

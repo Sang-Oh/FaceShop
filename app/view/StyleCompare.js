@@ -2,7 +2,7 @@ Ext.define("FaceShop.view.StyleCompare", {
     extend: 'Ext.Container',
     requires:[
     'Ext.dataview.DataView',
-    'Ext.dataview.List'
+    'Ext.dataview.List',
     ],
     xtype:'stylecompare',
     config:{
@@ -12,6 +12,7 @@ Ext.define("FaceShop.view.StyleCompare", {
 		{
 			flex:1,
 			xtype:'dataview',
+			emptyText:'',
 			itemTpl: '<img src="{style}" style="width:100%;" />',
 			/*
 			data:[
@@ -19,7 +20,7 @@ Ext.define("FaceShop.view.StyleCompare", {
 				{style:'resources/images/man/b.png'},
 			]
 			*/
-			store:'Style',
+			store:null
 			/*
 			inline: {
 		        wrap: false
@@ -27,9 +28,10 @@ Ext.define("FaceShop.view.StyleCompare", {
 	        */					
 		},{
 			flex:1,
+			emptyText:'',
 			xtype:'dataview',
 			itemTpl: '<img src="{style}" style="width:100%;" />',
-			store:'Style',			
+			store:null		
 		}
 		],
     }

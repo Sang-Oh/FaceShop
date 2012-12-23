@@ -20,6 +20,10 @@ Ext.define('FaceShop.model.Style',{
 			name:'itemimg',
 			type:'string'
 		}
-		]
+		],
+		proxy:{
+			type:'localstorage',
+			id:'face-style'
+		}
 	}
 })

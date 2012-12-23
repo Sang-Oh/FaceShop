@@ -6,7 +6,7 @@ Ext.define('FaceShop.model.FaceItem',{
 		fields:['id','model','descript','ranks','categorys','tags','thumbs','styles','markets'],
         proxy: {
             type: 'jsonp',
-            url: FaceShop.app.server+'service.php?name=faceitem',
+            url: SERVER_ADDR+'service.php?name=faceitem&packname=hot&packtype=event',
             
             extraParams:{	// default faceitem...
             	packname:'hot',
@@ -17,12 +17,17 @@ Ext.define('FaceShop.model.FaceItem',{
                 type: 'json',
                 rootProperty: 'rows'
             }
-        },		
+        }
+	},
+	getStyleIconAt:function(nth) {
+		if (!nth)
+			nth = 0;
+		return SERVER_ADDR+'file.php?file='+this.get('styles')[nth].img;
 	},
 	getBestThumbIcon:function() {
-		return FaceShop.app.server+this.get('thumbs')[0].img;
+		return SERVER_ADDR+this.get('thumbs')[0].img;
 	},
 	getBestStyleIcon:function() {
-		return FaceShop.app.server+'file.php?file='+this.get('styles')[0].img;
+		return SERVER_ADDR+'file.php?file='+this.get('styles')[0].img;
 	}
 })

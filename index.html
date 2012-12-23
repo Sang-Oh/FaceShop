@@ -4,98 +4,12 @@
     <meta charset="UTF-8">
     <title>FaceShop</title>
     <style type="text/css">
-    
-
         html, body {
             height: 100%;
             background-color: #1985D0
         }
 
-		.thumbnailimg {
-			width:48px;
-			height:48px;
-			padding:0;
-			margin-top:6px;
-			margin-left:12px;
-			margin-right:6px;
-		}
-		.stylebox {
-			border:solid;
-			border-width:1px;
-			width:140px;
-			height:140px;
-			padding:10px;
-			margin:10px;
-		}
-		.styleimg {
-			height:100%;
-			width:100%;
-		}
-		.thumbnailcontainer {
-			position:absolute;left:0px;
-			bottom:0px;height:60px;width:100%;background-color:#111111;opacity:0.7;
-		}
-		.objframe {
-			position:absolute;left:50%;top:50%;
-			left:0px;top:0px;
-			margin:15px;
-			padding:15px;
-			width:200px;
-			height:100px;
-		}
-		.hidemark {
-			border:none;
-		}
-		.showmark {
-			border:dashed;
-			border-color: white;
-			border-width:1px;			
-		}
-		.marklt {
-			position:absolute;
-			left:0;
-			top:0;
-			width:10px;
-			height:10px;
-			margin-left:-5px;
-			margin-top:-5px;
-		}
-		.marklb {
-			position:absolute;
-			left:0;
-			bottom:0;
-			width:10px;
-			height:10px;
-			margin-left:-5px;
-			margin-bottom:-5px;
-		}
-		.markrb {
-			position:absolute;
-			right:0;
-			bottom:0;
-			width:10px;
-			height:10px;
-			margin-right:-5px;
-			margin-bottom:-5px;
-		}
-		.markrt {
-			position:absolute;
-			right:0;
-			top:0;
-			width:10px;
-			height:10px;
-			margin-right:-5px;
-			margin-top:-5px;
-		}
-				.objimg {
-			position:absolute;
-			left:0;
-			top:0;
-			margin:5;
-			padding:0;
-			width:100%;
-			height:100%;
-		}
+
 		
 		#appLoadingIndicator {
             position: absolute;
@@ -132,61 +46,77 @@
             }
         }
     </style>
+	<script type="text/javascript" charset="utf-8">
+		var SERVER_ADDR='http://faceware.cafe24.com/';
+	</script>
+
+
     <script type="text/javascript" src="kinetic-v4.0.5.min.js"></script>
-  <!--
-    <script type="text/javascript" src="cordova-2.2.0.js"></script>
--->	
         <!-- The line below must be kept intact for Sencha Command to build your application -->
     <script id="microloader" type="text/javascript" src="touch/microloader/development.js"></script>
+    <script type="text/javascript" src="ios_cordova-2.2.0.js"></script>
 	<script type="text/javascript" charset="utf-8">
 	    var pictureSource;   // picture source
 	    var destinationType; // sets the format of returned value 
-/*
+
 	    document.addEventListener("deviceready",onDeviceReady,false);
 	    function onDeviceReady() {
 	        pictureSource=navigator.camera.PictureSourceType;
 	        destinationType=navigator.camera.DestinationType;
 	    };
-*/	        //
-	    function capturePhotoBase64(onPhotoDataSuccess, onFail) {
-	      // Take picture using device camera and retrieve image as base64-encoded string
-	      navigator.camera.getPicture(onPhotoDataSuccess, onFail, 
-	      	{ quality: 50,
-	      	allowEdit:true,
-	        destinationType: destinationType.DATA_URL,
-	        correctOrientation:true 
-	        });
+	    function capturePhotoBase64(onPhotoDataSuccess, onFail, size) {
+	     	navigator.camera.getPicture(onPhotoDataSuccess, 
+	      							onFail, 
+	      							{ 
+										destinationType: destinationType.DATA_URL,
+								      	quality: 90, 
+								      	allowEdit:false,
+										targetWidth:size.width,
+										targetHeight:size.height,	        
+										correctOrientation:true 
+									});
 	    };
-	    function capturePhotoFile(onPhotoDataSuccess, onFail) {
-	      // Take picture using device camera and retrieve image as base64-encoded string
-	      navigator.camera.getPicture(onPhotoDataSuccess, onFail, 
-	      	{ quality: 50,
-	      		allowEdit:true,
-	        destinationType: destinationType.FILE_URI, 
-	        correctOrientation:true });
+	    function capturePhotoFile(onPhotoDataSuccess, onFail, size) {
+	     	navigator.camera.getPicture(onPhotoDataSuccess, 
+	      							onFail, 
+	      							{ 
+										destinationType: destinationType.FILE_URI,
+								      	quality: 90, 
+								      	allowEdit:false,
+										targetWidth:size.width,
+										targetHeight:size.height,	        
+										correctOrientation:true 
+									});
+
 	    };	     
-	    function getPhotoFile(onPhotoDataSuccess, onFail) {
-	      // Retrieve image file location from specified source
-	      navigator.camera.getPicture(onPhotoDataSuccess, onFail, 
-	      	{ quality: 50, 
-	      		allowEdit:true,
-	        destinationType: destinationType.FILE_URI,
-	        sourceType: pictureSource.SAVEDPHOTOALBUM 
-	        });
+	    function getPhotoFile(onPhotoDataSuccess, onFail, size) {
+	     	navigator.camera.getPicture(onPhotoDataSuccess, 
+	      							onFail, 
+	      							{ 
+										destinationType: destinationType.FILE_URI,
+								      	quality: 90, 
+								      	allowEdit:false,
+										targetWidth:size.width,
+										targetHeight:size.height,	        
+										sourceType: pictureSource.SAVEDPHOTOALBUM 
+									});
 	    };	    
-	    function getPhotoBase64(onPhotoDataSuccess, onFail) {
-	      // Retrieve image file location from specified source
-	      navigator.camera.getPicture(onPhotoDataSuccess, onFail, 
-	      	{ quality: 50, 
-	      		allowEdit:true,
-	        destinationType: destinationType.DATA_URL,
-	        sourceType: pictureSource.SAVEDPHOTOALBUM });
+	    function getPhotoBase64(onPhotoDataSuccess, onFail, size) {
+	      navigator.camera.getPicture(onPhotoDataSuccess, 
+	      							onFail, 
+							      	{ 
+							      		destinationType: destinationType.DATA_URL,
+								      	quality: 90, 
+								      	allowEdit:false,
+										targetWidth:size.width,
+										targetHeight:size.height,	        
+										sourceType: pictureSource.SAVEDPHOTOALBUM 
+									});
 	    };	    
-	    
 	</script>
     
 
 </head>
-<body id="loading" style="width:100%;height:100%;background: url(resources/images/background1.png) center no-repeat;background-size:100% 100%;">
+<body id="loading" style="width:100%;height:100%;background: url(resources/images/background.png) center no-repeat;background-size:100% 100%;">
 </body>
 </html>

@@ -4,33 +4,38 @@ Ext.define("FaceShop.view.StyleList", {
     config:{
 		layout:'fit',
 		style:'width:100%;height:100%;background: url(resources/images/background.png) center no-repeat;background-size:100% 100%;',	
-		store:'Style',
 		inline: {
 	        wrap: true
         },
-		//tpl:'<tpl for="items"><img src="{style}"/></tpl>',	
-		itemTpl: '<div class="stylebox"><img src="{style}" class="styleimg"/></div>',
+		emptyText:'',
+		
+		itemCls:'styleitemcls',
+		pressedCls:'styleitempressedcls',
+		selectedCls:'styleitemselectedcls',
+		itemTpl: '<img src="{style}" style="border-radius:5px;margin:10px;" width="120" height="120" /></div>',
+		store:null,
 		items:[
 		{
 			xtype:'titlebar',
-			title:'Style Album',
+			title:'Styles',
 			docked:'top',
 			items:[
 			{
 				xtype:'button',
-				action:'back',
-				text:'Back',
-				align:'left',
+				action:'home',
+				iconCls:'home',
+				iconMask:true,
+				text:'',
 				ui:'back',
-				align:'left',
-			},{
+				align:'left'
+/*			},{
 				xtype:'button',
 				action:'home',
 				text:'Home',
 				align:'left',
 				ui:'normal',
 				align:'right'
-			}
+*/			}
 			]
 		},
 		]

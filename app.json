@@ -42,7 +42,14 @@
             "path": "app.js",
             "bundle": true,  /* Indicates that all class dependencies are concatenated into this file when build */
             "update": "delta"
+        },
+        {
+            "path": "cordova-2.2.0.js"
+        },
+        {
+            "path": "kinetic-v4.0.5.min.js"
         }
+        
     ],
 
     /**

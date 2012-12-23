@@ -7,7 +7,8 @@ Ext.define("FaceShop.view.Main", {
     'FaceShop.view.FaceList',
     'FaceShop.view.StyleView',
     'FaceShop.view.collection.Main',
-    'Ext.ux.PinchZoomImage'], 
+    'FaceShop.view.Help'
+    ], 
     xtype:'main', 
     config: {
     	layout:'card',
@@ -30,7 +31,10 @@ Ext.define("FaceShop.view.Main", {
         {
         	xtype:'facelist'
         },
+        {
+        	xtype:'help'
+        }
 	    ]
-	}   ,
+	}   
 
 });

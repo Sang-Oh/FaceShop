@@ -1,25 +1,35 @@
 $base-color:#944f1c;
-$packgroup-color:#CCCCCC;
+$packgroup-color:#E49E96;
 $faceitemgroup-color:#DDDDDD;
 @import 'sencha-touch/default/all';
-$include-default-icons:true;
+$include-default-icons:false;
 @include pictos-iconmask('action');
 @include pictos-iconmask('backspace');
+@include pictos-iconmask('address_book');
+@include pictos-iconmask('photo1');
+@include pictos-iconmask('photos2');
 @include pictos-iconmask('hanger');
+@include pictos-iconmask('settings3');
+@include pictos-iconmask('add');
+@include pictos-iconmask('home');
+@include pictos-iconmask('trash');
+@include pictos-iconmask('info');
+@include pictos-iconmask('shop1');
+
 // You may remove any of the following modules that you
 // do not use in order to create a smaller css file.
-@include sencha-panel;
+//@include sencha-panel;
 @include sencha-buttons;
-@include sencha-sheet;
-@include sencha-picker;
-@include sencha-tabs;
+//@include sencha-sheet;
+//@include sencha-picker;
+//@include sencha-tabs;
 @include sencha-toolbar;
-@include sencha-toolbar-forms;
-@include sencha-indexbar;
+//@include sencha-toolbar-forms;
+//@include sencha-indexbar;
 @include sencha-list;
 @include sencha-layout;
-@include sencha-carousel;
-@include sencha-form;
+//@include sencha-carousel;
+//@include sencha-form;
 @include sencha-msgbox;
 @include sencha-loading-spinner;
 
@@ -86,32 +96,325 @@ $include-default-icons:true;
       width:100%;
       height:100%;
 }
-
+/*
 .packbase {
    margin:20px !important;
   
 }
+*/
+.packitemcls {
+  background-color:white;
+  border-radius: 5px; 
+  margin-left:10px;
+  -webkit-box-shadow: 0px 3px 5px #555;
+}
+.packitempressedcls {
+  background-color:white;
+  border-radius: 5px; 
+  margin-left:10px;
+  -webkit-box-shadow: none;
+}
+.packitemselectedcls {
+  background-color:white;
+  border-radius: 3px; 
+  margin-left:10px;
+  -webkit-box-shadow: 0px 3px 5px #000;
+}
+
 .packcontainer {
-  //border-radius: 5px;
-  //background-color:gray;
+  border-radius: 3px;
+  background-color: rgba(0, 0, 0, 0.3);
+  overflow:hidden;
 //@include bevel-by-background(#944f1c);
-  @include background-gradient($packgroup-color, recessed); 
+//  @include background-gradient($packgroup-color, recessed); 
 }
 .faceitemcontainer {
-  //border-radius: 5px;
-  //background-color:gray;
+  border-radius: 3px;
+  background-color: rgba(0, 0, 0, 0.3);
 //@include bevel-by-background(#944f1c);
-  @include background-gradient($faceitemgroup-color, recessed); 
+//  @include background-gradient($faceitemgroup-color, recessed); 
+}
+
+.faceiteminfocontainer {
+  border-radius:5px;
+  //padding:1px;
+  background-color: rgba(0, 0, 0, 0.3);
 }
 .packimg {
-      width:92px;
-      height: 68px;
-      margin-top:5px;
-      margin-left:8px;
+      width:70px;
+      height: 80px;
+      margin-top:10px;
+      margin-left:5px;
       padding-left:0px;
       padding-top:0px;
-      
+}
 
+.thumbnailimg {
+    //width:100%;
+    height:100%;
+    padding:0;
+    margin-top:6px;
+    margin-left:12px;
+    margin-right:6px;
+}
+
+.styleitemcls {
+  position:relative;
+  //background-color:white;
+  border-radius: 5px; 
+  width:140px;
+  height:140px;
+  margin:5px;
+  //padding:5px;
+  -webkit-box-shadow: 0px 3px 5px #555;
+}
+.styleitempressedcls {
+  //background-color:white;
+  width:140px;
+  height:140px;
+  border-radius: 5px; 
+  margin:5px;
+  //padding:5px;
+  -webkit-box-shadow: none;
+}
+.styleitemselectedcls {
+  //background-color:white;
+  width:140px;
+  height:140px;
+  border-radius: 5px; 
+  margin:5px;
+  -webkit-box-shadow: 0px 3px 5px #000;
+}
+
+.stylebox {
+  position:relative;
+        border-width:0px; 
+    //width:140px;
+    //height:140px;
+    padding:10px;
+    //margin:10px;
+}
+  .styleimg {
+      border:solid;
+      border-width:1px;
+      margin:10px;    
+      height:100%;
+      width:100%;
+    }
+    .thumbnailcontainer {
+      position:absolute;left:0px;
+      bottom:0px;height:60px;width:100%;
+      background: rgba(33,33,33,0.5);
+      //background-color:#111111;opacity:0.7;
+    }
+    .thumbnailcontainer2 {
+      position:absolute;left:0px;
+      border-radius: 5px; 
+      margin-left:10%;      
+      margin-right:10%;      
+      bottom:70px;height:60px;width:80%;
+      background: rgba(99,99,99,0.5);
+      //background-color:#111111;opacity:0.7;
+    }
+    .objframe {
+      position:absolute;left:50%;top:50%;
+      left:0px;top:0px;
+      margin:15px;
+      padding:15px;
+      width:200px;
+      height:100px;
     }
 
-// Your custom code goes here...
+   .objimg {
+      position:absolute;
+      left:0;
+      top:0;
+      margin:5;
+      padding:0;
+      width:100%;
+      height:100%;
+    }
+    
+@-webkit-keyframes cf2FadeInOut {
+ 0% {
+   opacity:1;
+ }
+ 35% {
+   opacity:1;
+ }
+ 50% {
+   opacity:0;
+ }
+ 85% {
+   opacity:0;
+ }
+ 100% {
+   opacity:1;
+ }
+}   
+@-webkit-keyframes cf3FadeInOut {
+ 0% {
+   opacity:1;
+ }
+ 33% {
+   opacity:1;
+ }
+ 50% {
+   opacity:0;
+ }
+ 90% {
+   opacity:0;
+ }
+ 100% {
+   opacity:1;
+ }
+}    
+@-webkit-keyframes cf4FadeInOut {
+ 0% {
+   opacity:1;
+ }
+ 17% {
+   opacity:1;
+ }
+ 25% {
+   opacity:0;
+ }
+ 92% {
+   opacity:0;
+ }
+ 100% {
+   opacity:1;
+ }
+}
+@-webkit-keyframes cf5FadeInOut {
+ 0% {
+   opacity:1;
+ }
+ 14% {
+   opacity:1;
+ }
+ 20% {
+   opacity:0;
+ }
+ 94% {
+   opacity:0;
+ }
+ 100% {
+   opacity:1;
+ }
+}
+.cf1a {
+  position:relative;
+  height:70px;
+  width:70px;
+  margin:0 auto;
+}
+.cf2a {
+  position:relative;
+  height:70px;
+  width:70px;
+  margin:0 auto;
+}
+.cf2a img {
+  position:absolute;
+  left:0;
+}
+.cf2a img {
+  -webkit-animation-name: cf2FadeInOut;
+  -webkit-animation-timing-function: ease-in-out;
+  -webkit-animation-iteration-count: infinite;
+  -webkit-animation-duration: 4s;
+}
+.cf2a img:nth-of-type(1) {
+  -webkit-animation-delay: 2s;
+}
+.cf2a img:nth-of-type(2) {
+  -webkit-animation-delay: 0s;
+}
+
+.cf3a {
+  position:relative;
+  height:70px;
+  width:70px;
+  margin:0 auto;
+}
+.cf3a img {
+  position:absolute;
+  left:0;
+}
+.cf3a img {
+  -webkit-animation-name: cf3FadeInOut;
+  -webkit-animation-timing-function: ease-in-out;
+  -webkit-animation-iteration-count: infinite;
+  -webkit-animation-duration: 6s;
+}
+.cf3a img:nth-of-type(1) {
+  -webkit-animation-delay: 4s;
+}
+.cf3a img:nth-of-type(2) {
+  -webkit-animation-delay: 2s;
+}
+.cf3a img:nth-of-type(3) {
+  -webkit-animation-delay: 0s;
+}
+
+.cf4a {
+  position:relative;
+  height:70px;
+  width:70px;
+  margin:0 auto;
+}
+.cf4a img {
+  position:absolute;
+  left:0;
+}
+.cf4a img {
+  -webkit-animation-name: cf4FadeInOut;
+  -webkit-animation-timing-function: ease-in-out;
+  -webkit-animation-iteration-count: infinite;
+  -webkit-animation-duration: 8s;
+}
+.cf4a img:nth-of-type(1) {
+  -webkit-animation-delay: 6s;
+}
+.cf4a img:nth-of-type(2) {
+  -webkit-animation-delay: 4s;
+}
+.cf4a img:nth-of-type(3) {
+  -webkit-animation-delay: 2s;
+}
+.cf4a img:nth-of-type(4) {
+  -webkit-animation-delay: 0s;
+}
+
+.cf5a {
+  position:relative;
+  height:70px;
+  width:70px;
+  margin:0 auto;
+}
+.cf5a img {
+  position:absolute;
+  left:0;
+}
+.cf5a img {
+  -webkit-animation-name: cf5FadeInOut;
+  -webkit-animation-timing-function: ease-in-out;
+  -webkit-animation-iteration-count: infinite;
+  -webkit-animation-duration: 10s;
+}
+.cf5a img:nth-of-type(1) {
+  -webkit-animation-delay: 8s;
+}
+.cf5a img:nth-of-type(2) {
+  -webkit-animation-delay: 6s;
+}
+.cf5a img:nth-of-type(3) {
+  -webkit-animation-delay: 4s;
+}
+.cf5a img:nth-of-type(4) {
+  -webkit-animation-delay: 2s;
+}
+.cf5a img:nth-of-type(5) {
+  -webkit-animation-delay: 0s;
+}// Your custom code goes here...

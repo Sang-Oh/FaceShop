@@ -4,11 +4,10 @@ Ext.define("FaceShop.view.Layout", {
     'Ext.carousel.Carousel',
     'Ext.dataview.DataView',
     'Ext.ActionSheet',
-    'Ext.data.Store',
-    'Ext.ux.PinchZoomImage'],   
+    'Ext.data.Store'],   
     xtype:'facelayout',
     config: {
-    	layout:'fit',
+    	caller:null,
     	html:'<div id="facecontainer" style="background:url(resources/images/background.png) center no-repeat;background-size:100% 100%;position:absolute;background-color:#000;width:100%;height:100%;"></div>',
         items: [
 		{
@@ -17,15 +16,19 @@ Ext.define("FaceShop.view.Layout", {
 			title:'Stage',
 			items:[
 			{
-				iconCls:'backspace',
-				iconMask:true,
+				//iconCls:'backspace',
+				//iconMask:true,
+				ui:'back',
+				text:'Back',
 				align:'left',
         		action:'back',				
 			}, {
-				iconCls:'action',
+				iconCls:'add',
 				iconMask:true,
+				ui:'confirm',
+				text:'Save',
 				align:'right',	
-        		action:'menu',				
+        		action:'save',				
 			}	
 			]
 		},
@@ -79,30 +82,55 @@ Ext.define("FaceShop.view.Layout", {
 	            	{
 	                    xtype: 'dataview',
 	                    flex:1,
+	                    id:'faceitemlist',
 	                    scrollable:'horizontal',
 	                    //margin:'100 0 0 0',
 	                    inline: {
 	                        wrap: false
 	                    },
-	                    itemTpl: new Ext.XTemplate('<img src="{thumbs:this.getBestIcon}" class="thumbnailimg" />',
+	                    itemTpl: new Ext.XTemplate('<div style="height:48px;"> <img src="{thumbs:this.getBestIcon}" class="thumbnailimg" /></div>',
 	                    				{
 										getBestIcon:function(icons) {
-												var img = '';
+											var img = icons[0].img;
 											for (var i=0;i<icons.length;i++) {
 												if (icons[i].type == '1x') {
 													img = icons[i].img;
 													break;
 												}
-												img = icons[i].img;
+												
 											}
-											return (FaceShop.app.server+img);
+											return (SERVER_ADDR+img);
 										}
 									}),
 	                    store:'FaceItems',
 	            	}
 	            	]
 	            	
-	            }
+	            },
+	            {
+            		xtype:'dataview',
+            		id:'faceitemsublist',
+            		flex:1,
+            		hidden:true,
+            		docked:'bottom',
+            		scrollable:'horizontal',
+            		cls:'thumbnailcontainer2',
+            		inline: {
+            			wrap:false,
+            		},
+            		showAnimation: {
+		                type: 'popIn',
+		                duration: 250,
+		                easing: 'ease-out'
+		            },
+            		itemTpl:new Ext.XTemplate(
+            				[
+            				'<div style="height:48px;">',
+            					'<img src="{[SERVER_ADDR+values.img]}" class="thumbnailimg" />',
+            				'</div>'
+            				].join(''))
+
+	            	}
 	            
 	           
 		],

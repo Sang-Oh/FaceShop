@@ -1,8 +1,7 @@
 //<debug>
 Ext.Loader.setPath({
     'Ext': 'touch/src',
-    'FaceShop': 'app',
-	'Ext.ux': 'libs/ux'    
+    'FaceShop': 'app', 
 });
 //</debug>
 
@@ -16,9 +15,7 @@ Ext.application({
     requires: [
         //'Ext.MessageBox'
     ],
- 
-    server:'http://faceware.cafe24.com/',
-    stores:['Packs','Style','FaceItems','Face'],
+    stores:['Packs','Styles','FaceItems','Face'],
 	controllers:['Main'],
     views: ['Main','StyleCompare'],
 
@@ -42,12 +39,12 @@ Ext.application({
     },
 */
     launch: function() {
-        // Destroy the #appLoadingIndicator element
+    	Ext.getStore('Styles').load(function() {
+	      Ext.fly('loading').destroy();
+    		Ext.Viewport.add(Ext.create('FaceShop.view.Main'));
+	        Ext.Viewport.add(Ext.create('FaceShop.view.StyleCompare'));
+    	});
 
-        //Ext.fly('loading').destroy();
-    	//alert('aaa');
-        Ext.Viewport.add(Ext.create('FaceShop.view.Main'));
-        Ext.Viewport.add(Ext.create('FaceShop.view.StyleCompare'));
     },
 
     onUpdated: function() {
