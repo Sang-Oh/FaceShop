@@ -39,6 +39,8 @@ Ext.define('FaceShop.view.Help', {
 				'<p>Just tap the save button and you can see all item in the styles album at home page.</p>',
 				'<h6>View style album</h6>',
 				'<p>Your faceware styles are saved in style album of main page. you can  see the detail and edit it by tap.</p>',
+				'<h6>Contributors</h6>',
+				'<p>I really thank you for whom help me build faceware. Hyung-Wook, Jun-Hyung, Jeong-Seob are good frieds.</p>',
 				'<h4>Share</h4>',
 					'<p>We are pleased to add your facewares. <br />',
 					'Please contact us if you want to share it with others.</p>',

@@ -67,6 +67,7 @@ Ext.define("FaceShop.view.StyleView", {
     applyData:function(newData,oldData) {
     	var me = this;
     	var btn = me.query('[action=viewfaceiteminfo]')[0];
+    	if (newData == null) return newData;	
     	btn.setDisabled(true);
 		Ext.data.JsonP.request({
 			url: SERVER_ADDR+'service.php?name=faceiteminfo',

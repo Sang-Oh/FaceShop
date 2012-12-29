@@ -354,7 +354,7 @@ Ext.define('FaceShop.controller.Main', {
 				newRecord.set('style', dataUrl);
 				newRecord.set('faceitemid', faceitemid);
 				newRecord.set('faceimg', me.getFaceImgSrc());
-				newRecord.set('iemimg', me.getItemImgSrc());
+				newRecord.set('itemimg', me.getItemImgSrc());
 				newRecord.set('stage', stage.toJSON());
 				/*
 				newRecord.setData(
@@ -370,11 +370,17 @@ Ext.define('FaceShop.controller.Main', {
 				*/
 				
 			}
-			
-			
 			newRecord.save();
 			Ext.Viewport.unmask();
-			//me.getMain().setActiveItem(me.getStyleList());
+		
+			if (me.getSelectedStyle() != null) {	// if edit mode , return to style view
+				var view = me.getStyleView();
+				view.setData(null);	// for the image update... refresh...
+				view.setData(newRecord.getData());				
+				me.onBackFromFaceLayout();
+			}
+			
+			//me.getMain().setActiveItem(me.getStyleList()); // always... stay if new layout
 			}
 		});
 		
@@ -556,6 +562,7 @@ Ext.define('FaceShop.controller.Main', {
 	},
 	onItemSelectFromStyleList:function(dataview,  index,  target, record){
 		var view = this.getStyleView();
+		view.setData(null);	// for the image update... refresh...
 		view.setData(record.getData());
 		this.getMain().setActiveItem(view);
     },
